@@ -10,7 +10,7 @@ spec-compliant as any other YAML parser (other than the "reference
 parsers", since there don't seem to exist any actually-usable YAML
 parsers that are precisely specification-compliant.
 
-The YAYAML specification can be found (here)[YAYAML-SPEC-0.1.md]
+The YAYAML specification can be found (here)[YAYAML-SPEC-0.1.md].
 
 ## This Implementation
 
