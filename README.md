@@ -10,6 +10,21 @@ spec-compliant as any other YAML parser (other than the "reference
 parsers", since there don't seem to exist any actually-usable YAML
 parsers that are precisely specification-compliant.
 
+## This Implementation
+
+To cut to the chase, this project is an implementation of a reference
+YAYAML parser and printer in OCaml.  The easiest way to install is via
+opam:
+
+```
+opam install .
+```
+
+This will ensure that pre-reqs are installed.  There are copious
+examples, which can be found by looking at files containing the string
+"test".  In addition, this implementation passes both the JSON
+Testsuite and (a suitably modified) YAML Testsute.  Both are included
+as Git subprojects.
 
 ## Motivation
 
@@ -81,25 +96,26 @@ specification and its implementations.
 
 YAYAML's specification is structured in the manner of typical language
 specs: it specifies the character-set of the language, then the
-lexemes, and then the grammar.  It is an explicit goal of YAYAML to
-enable straightforward implementation using lex/yacc tooling, and
-hence to ensure that all implementations can have identical behaviour
-(which documents they accept/reject, and in-memory semantics of those
-documents).
+lexemes, and then the grammar.  The goals of YAYAML (in addition to those of YAML) are:
 
-Furthermore, it is an equally explicit goal of YAYAML, that:
+1. enable and deliver straightforward implementation using lex/yacc
+tooling, and hence to ensure that all implementations can have
+identical behaviour (which documents they accept/reject, and in-memory
+semantics of those documents).
 
-* every JSON document is already a YAYAML document
-
-* every YAYAML document is equal to a JSON document: that is, when
-  parsed, its in-memory representation is identical to that of the
-  JSON document that would be emitted when the document is printed in
-  "JSON mode".
+2. YAYAML is merely (*merely*) a nicer syntax for writing JSON
+   documents.  Every YAYAML document can be thought of as a JSON
+   document, and JSON documents are accepted as YAYAML "flow style".
   
-The user can firmly rely on YAYAML as being merely (*merely*) a
-convenient syntax for writing JSON documents.  There are a few
-deviations from this rule, and they will be explained in this
-specification.
+   The user can firmly rely on YAYAML as being merely (*merely*) a
+   convenient syntax for writing JSON documents.  There are a few
+   deviations from this rule, and they will be explained in this
+   specification.  Those deviations concern only the first line, and
+   multi-document support: it will always be the case that a single
+   JSON document in a file, is accepted as a YAYAML document.
+   
+
+
 
 ================================================================
 
