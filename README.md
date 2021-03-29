@@ -10,6 +10,8 @@ spec-compliant as any other YAML parser (other than the "reference
 parsers", since there don't seem to exist any actually-usable YAML
 parsers that are precisely specification-compliant.
 
+The YAYAML specification can be found (here)[YAYAML-SPEC-0.1.md]
+
 ## This Implementation
 
 To cut to the chase, this project is an implementation of a reference
@@ -25,6 +27,8 @@ examples, which can be found by looking at files containing the string
 "test".  In addition, this implementation passes both the JSON
 Testsuite and (a suitably modified) YAML Testsute.  Both are included
 as Git subprojects.
+
+Further instructions for installation can be found [here](INSTALL.md).
 
 ## Motivation
 
@@ -92,11 +96,12 @@ specification and its implementations.
   to know how to write their YAML.  They practice "defensive YAML",
   and this is a *prima facie* proof that this goal has not been met.
 
-## Introducing YAYAML's Specification
+## YAYAML's Design Goals
 
 YAYAML's specification is structured in the manner of typical language
 specs: it specifies the character-set of the language, then the
-lexemes, and then the grammar.  The goals of YAYAML (in addition to those of YAML) are:
+lexemes, and then the grammar.  The goals of YAYAML (in addition to
+those of YAML) are:
 
 1. enable and deliver straightforward implementation using lex/yacc
 tooling, and hence to ensure that all implementations can have
