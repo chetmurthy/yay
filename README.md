@@ -30,6 +30,8 @@ specification and its implementations.
 
 * "2. YAML data is portable between programming languages."
 
+  Two reasons:
+
 	* YAML's data-model does not match that of most programming
 	  languages: complex keys and anchors simply do not correspond to
 	  PL data types in most cases.
@@ -39,7 +41,9 @@ specification and its implementations.
       document, you must be aware of which language and which parser
       will be used to parse it.  This ought to be unacceptable.
   
-* I don't even know what Goal #3 might mean, but perhaps it means that
+* "4. YAML has a consistent model to support generic tools."
+
+  I don't even know what this might mean, but perhaps it means that
   YAML supports tooling via "directives" that give instructions to the
   tooling, separate from the documents themselves.  This might be true
   and useful, but it seems pretty niche, and I know of no examples of
@@ -54,20 +58,24 @@ specification and its implementations.
   parsing, so it is feasible to find the last document in a YAML file,
   parse it, and then back up to parse the entire file.
 
-* Goal #5 is met, but superfluous: any YAML file *will* easily fit in
-  memory, so one-pass processing is unnecessary.  Notwithstanding,
- aside from the workaround for Goal #3, I see no reason why one-pass
-  processing is problematic to achieve in YAYAML.
+* "5. YAML supports one-pass processing."
 
-* It's not clear what Goal #6 means: in what sense is YAML extensible,
+  Met, but superfluous: any YAML file *will* easily fit in memory, so
+  one-pass processing is unnecessary.  Notwithstanding, aside from the
+  workaround for Goal #3, I see no reason why one-pass processing is
+  problematic to achieve in YAYAML.
+
+* "6. YAML is expressive and extensible."
+
+  It's not clear what this means: in what sense is YAML extensible,
   and in what sense *should* it be extensible?
   
-* Goal #7 has not been met, in the sense that many YAML users find
-  that they need to know precisely which YAML parser they'll be using,
-  in order to know how to write their YAML.  They practice "defensive
-  YAML", and this is a *prima facie* proof that this goal has not been
-  met.
+* "7. YAML is easy to implement and use."
 
+  Has not been met, in the sense that many YAML users find that they
+  need to know precisely which YAML parser they'll be using, in order
+  to know how to write their YAML.  They practice "defensive YAML",
+  and this is a *prima facie* proof that this goal has not been met.
 
 
 ================================================================
