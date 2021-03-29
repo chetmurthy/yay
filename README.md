@@ -1,4 +1,4 @@
-YAYAML Ain't YAML
+# YAYAML Ain't YAML
 
 This is an specification of a *slight* variant of
 YAML, and an implementation of a parser (soon to be joined by printer) for that language.
@@ -11,7 +11,7 @@ parsers", since there don't seem to exist any actually-usable YAML
 parsers that are precisely specification-compliant.
 
 
-# Motivation
+## Motivation
 
 YAML's goals are worthwhile, but they are not met by the current
 specification and its implementations.
