@@ -26,9 +26,9 @@ specification and its implementations.
 6. YAML is expressive and extensible.
 7. YAML is easy to implement and use.
 
-### Goals not net
+### Goals not met
 
-* Goal #2 is simply not met, for two reasons: 
+* 2. YAML data is portable between programming languages.
 
 	* YAML's data-model does not match that of most programming
 	  languages: complex keys and anchors simply do not correspond to
