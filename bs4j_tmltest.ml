@@ -1,7 +1,7 @@
 open OUnit2
 open OUnitTest
 
-let tml_dir = "/home/chet/Hack/Github/yaml/yaml-test-suite/test"
+let tml_dir = "yaml-test-suite/test"
 
 let only_tags = []
 let exclude_tags = ["anchor"; "alias"; "explicit-key"; "tag"; "complex-key"; "empty-key"]

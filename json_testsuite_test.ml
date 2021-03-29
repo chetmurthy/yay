@@ -2,7 +2,7 @@ open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
 
-let testsuite_dir = "/home/chet/Hack/Github/nst/JSONTestSuite"
+let testsuite_dir = "JSONTestSuite"
 
 let skiplist = [
   ("n_structure_trailing_#.json", Some "BS4J allows perl comments in JSON mode")

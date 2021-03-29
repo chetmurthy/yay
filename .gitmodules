@@ -1,0 +1,6 @@
+[submodule "yaml-test-suite"]
+	path = yaml-test-suite
+	url = git@github.com:yaml/yaml-test-suite.git
+[submodule "JSONTestSuite"]
+	path = JSONTestSuite
+	url = git@github.com:nst/JSONTestSuite.git
