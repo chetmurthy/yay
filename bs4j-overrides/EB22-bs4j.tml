@@ -1,0 +1,20 @@
+=== Missing document-end marker before directive
+--- from: @perlpunk
+--- tags: directive footer
+
+--- in-yaml(<)
+    ---
+    scalar1 # comment
+    %YAML 1.2
+    ---
+    scalar2
+
+--- in-json
+"scalar1 %YAML 1.2"
+"scalar2"
+
+--- test-event
++STR
++DOC ---
+=VAL :scalar1
+-DOC

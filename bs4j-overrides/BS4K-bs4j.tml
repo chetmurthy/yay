@@ -1,0 +1,16 @@
+=== Comment between plain scalar lines
+--- from: https://gist.github.com/anonymous/269f16d582fdd30a7dcf8c9249c5da7f via @ingydotnet
+--- tags: scalar
+
+--- in-yaml
+word1  # comment
+word2
+
+--- in-json
+"word1 word2"
+
+--- test-event
++STR
++DOC
+=VAL :word1
+-DOC

@@ -1,0 +1,17 @@
+=== Invalid nested mapping
+--- from: @perlpunk
+--- tags: mapping
+
+--- in-yaml(<)
+    ---
+    a: 'b': c
+
+--- in-json
+{ "a": { "b": "c" } }
+
+--- test-event
++STR
++DOC ---
++MAP
+=VAL :a
+=VAL 'b

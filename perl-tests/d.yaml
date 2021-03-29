@@ -1,0 +1,13 @@
+---
+a: true
+b: false
+c: yes
+d: no
+e,f: g
+...
+---
+- a
+...
+---
+-a
+...

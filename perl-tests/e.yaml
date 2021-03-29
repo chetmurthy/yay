@@ -1,0 +1,15 @@
+---
+true: 2
+false: 2
+1.0: 2
+null: 2
+a:
+  true
+  false
+b: >
+  true
+  false
+c: |
+  true
+  false
+...

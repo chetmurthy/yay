@@ -1,0 +1,22 @@
+=== Spec Example 6.14. “YAML” directive
+--- from: http://www.yaml.org/spec/1.2/spec.html#id2781929
+--- tags: spec directive
+
+--- in-yaml(<)
+    %BS4J-1.0
+    # comments are fine
+    ---
+    "foo"
+
+--- in-json
+"foo"
+
+--- out-yaml(<)
+    --- "foo"
+
+--- test-event
++STR
++DOC ---
+=VAL "foo
+-DOC
+-STR

@@ -1,0 +1,9 @@
+---
+foo: &anchor
+  K1: "One"
+  K2: "Two"
+
+bar:
+  <<: *anchor
+  K2: "I Changed"
+  K3: "Three"

@@ -1,0 +1,19 @@
+=== Invalid comment after end of flow sequence
+--- from: @perlpunk
+--- tags: comment flow sequence
+
+--- in-yaml(<)
+    ---
+    [ a, b, c, ]#invalid
+
+--- in-json
+["a","b", "c"]
+
+--- test-event
++STR
++DOC ---
++SEQ
+=VAL :a
+=VAL :b
+=VAL :c
+-SEQ

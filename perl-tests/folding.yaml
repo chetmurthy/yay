@@ -1,0 +1,23 @@
+---
+normal-yaml:
+  a
+  b
+  c
+folded-yaml: >
+  a
+  b
+  c
+folded-chomp-yaml: >-
+  a
+  b
+  c
+literal-yaml: |
+  a
+  b
+  c
+literal-chomp-yaml: |-
+  a
+  b
+  c
+
+...

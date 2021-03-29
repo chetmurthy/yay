@@ -1,0 +1,18 @@
+a: "abc"
+b: 2
+c: a b c
+d:
+  a b c
+  d e f
+e: |
+  a b c
+  d e f
+f: >
+  a b c
+  d e f
+g: >
+  a b c
+  d e f
+    g h i
+  j k l
+h: -0xff

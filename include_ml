@@ -1,0 +1,92 @@
+#use "topfind.camlp5";;
+#require "oUnit";;
+#require "fmt";;
+#require "rresult";;
+#require "pcre";;
+#require "bos";;
+#require "yaml";;
+#require "camlp5.pa_o";;
+#require "yojson" ;;
+#require "sedlex" ;;
+#require "pa_ppx.testutils" ;;
+#require "pa_ppx.base" ;;
+#require "pa_ppx.runtime" ;;
+
+let lexbuf_contents lb =
+  let open Lexing in
+  let pos = lb.lex_curr_pos in
+  let len = lb.lex_buffer_len - lb.lex_curr_pos in
+  (Bytes.to_string (Bytes.sub lb.lex_buffer pos len))
+;;
+
+let pp_lexbuf lb =
+  Format.print_string "#<lexbuf:<";
+  Format.print_string (lexbuf_contents lb);
+  Format.print_string ">>"
+;;
+#install_printer pp_lexbuf ;;
+
+print_string "================ START ================\n";; flush stdout ;;
+
+#load "jsontypes.cmo";;
+#load "jsontoken.cmo";;
+#load "jsonparse.cmo";;
+#load "jsontest.cmo";;
+open Jsontoken ;;
+open Jsonparse ;;
+open Jsontest ;;
+(*
+#trace St.pop_styles ;;
+#trace St.handle_indents_with ;;
+#trace St.increment_indent_with ;;
+#trace jsontoken ;;
+*)
+#load "tml.cmo";;
+(*
+#load "ocamlyaml_tmltest.cmo";;
+open Ocamlyaml_tmltest ;;
+*)
+
+#trace Tml.BS4J.docs_of_string_exn ;;
+#load "bs4j_tmltest.cmo";;
+open Bs4j_tmltest ;;
+
+(*
+#trace Tml.JSON.of_string_exn ;;
+#load "json_tmltest.cmo";;
+open Json_tmltest ;;
+*)
+(*
+#load "json_testsuite_test.cmo";;
+open Json_testsuite_test ;;
+#trace JSONTestsuite.of_string_exn ;;
+#trace JSONTestsuite.yojson_of_string_exn ;;
+#trace is_high_surrogate ;;
+#trace is_low_surrogate ;;
+#trace code_of_surrogate_pair ;;
+#trace Yojson.code_of_surrogate_pair ;;
+#trace Yojson.utf8_of_code ;;
+#trace Yojson.Raw.finish_surrogate_pair ;;
+*)
+(*
+#trace indentspaces ;;
+#trace rawtoken ;;
+#trace unquote_rawstring ;;
+#trace group;;
+#trace fold_groups;;
+#trace fold_lines;;
+#trace consume_indent;;
+*)
+(*
+#trace Sedlexing.new_line ;;
+#trace Jsontoken.jsontoken ;;
+#untrace_all ;;
+*)
+#print_length 1000;;
+#print_depth 1000;;
+(*
+;;; Local Variables: ***
+;;; mode:tuareg ***
+;;; End: ***
+
+*)

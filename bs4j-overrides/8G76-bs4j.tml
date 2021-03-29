@@ -1,0 +1,17 @@
+=== Spec Example 6.10. Comment Lines
+--- from: http://www.yaml.org/spec/1.2/spec.html#id2780544
+--- tags: spec comment empty scalar whitespace
+
+--- in-yaml(+)
+  # Comment
+<SPC><SPC><SPC>
+null
+
+--- in-json
+null
+
+--- out-yaml
+
+--- test-event
++STR
+-STR

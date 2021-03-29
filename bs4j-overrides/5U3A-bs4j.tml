@@ -1,0 +1,16 @@
+=== Sequence on same Line as Mapping Key
+--- from: @perlpunk
+--- tags: error sequence mapping
+
+--- in-yaml
+key: - a
+     - b
+
+--- in-json
+{ "key": ["a", "b"] }
+
+--- test-event
++STR
++DOC
++MAP
+=VAL :key

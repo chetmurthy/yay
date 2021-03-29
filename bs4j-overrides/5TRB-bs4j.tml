@@ -1,0 +1,16 @@
+=== Invalid document-start marker in doublequoted tring
+--- from: @perlpunk
+--- tags: header double
+
+--- in-yaml(<)
+    ---
+    "
+    ---
+    "
+
+--- in-json
+" --- "
+
+--- test-event
++STR
++DOC ---

@@ -1,0 +1,16 @@
+=== Comment without whitespace after doublequoted scalar
+--- from: @perlpunk
+--- tags: comment double whitespace
+
+--- in-yaml
+key: "value"# invalid comment
+
+--- in-json
+{ "key": "value" }
+
+--- test-event
++STR
++DOC
++MAP
+=VAL :key
+=VAL "value
