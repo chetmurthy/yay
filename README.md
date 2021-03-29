@@ -16,7 +16,7 @@ parsers that are precisely specification-compliant.
 YAML's goals are worthwhile, but they are not met by the current
 specification and its implementations.
 
-### Goals
+### YAML's Goals
 
 1. YAML is easily readable by humans.
 2. YAML data is portable between programming languages.
@@ -26,7 +26,7 @@ specification and its implementations.
 6. YAML is expressive and extensible.
 7. YAML is easy to implement and use.
 
-### Goals not met
+### Why YAML does not meet these Goals
 
 * "2. YAML data is portable between programming languages."
 
@@ -77,6 +77,29 @@ specification and its implementations.
   to know how to write their YAML.  They practice "defensive YAML",
   and this is a *prima facie* proof that this goal has not been met.
 
+## Introducing YAYAML's Specification
+
+YAYAML's specification is structured in the manner of typical language
+specs: it specifies the character-set of the language, then the
+lexemes, and then the grammar.  It is an explicit goal of YAYAML to
+enable straightforward implementation using lex/yacc tooling, and
+hence to ensure that all implementations can have identical behaviour
+(which documents they accept/reject, and in-memory semantics of those
+documents).
+
+Furthermore, it is an equally explicit goal of YAYAML, that:
+
+* every JSON document is already a YAYAML document
+
+* every YAYAML document is equal to a JSON document: that is, when
+  parsed, its in-memory representation is identical to that of the
+  JSON document that would be emitted when the document is printed in
+  "JSON mode".
+  
+The user can firmly rely on YAYAML as being merely (*merely*) a
+convenient syntax for writing JSON documents.  There are a few
+deviations from this rule, and they will be explained in this
+specification.
 
 ================================================================
 
