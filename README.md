@@ -28,7 +28,7 @@ specification and its implementations.
 
 ### Goals not met
 
-* 2. YAML data is portable between programming languages.
+* "2. YAML data is portable between programming languages."
 
 	* YAML's data-model does not match that of most programming
 	  languages: complex keys and anchors simply do not correspond to
