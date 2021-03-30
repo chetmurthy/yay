@@ -28,16 +28,16 @@ let pp_lexbuf lb =
 
 print_string "================ START ================\n";; flush stdout ;;
 
-#load "yayautil.cmo";;
+#load "yayutil.cmo";;
 #load "jsontypes.cmo";;
-#load "yayalexing.cmo";;
-#load "yayapostlexing0.cmo";;
-#load "yayapostlexing.cmo";;
+#load "yaylexing.cmo";;
+#load "yaypostlexing0.cmo";;
+#load "yaypostlexing.cmo";;
 #load "jsonparse.cmo";;
 #load "jsontest.cmo";;
-open Yayautil ;;
+open Yayutil ;;
 open Jsontypes ;;
-open Yayalexing ;;
+open Yaylexing ;;
 #trace Lexers.versiontag ;;
 #trace Lexers.indentspaces ;;
 #trace Lexers.rawtoken ;;

@@ -2,7 +2,7 @@ open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
 
-open Yayautil
+open Yayutil
 
 let warning s = Fmt.(pf stderr "%s\n%!" s)
 

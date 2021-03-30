@@ -3,7 +3,7 @@ OCAMLFIND=ocamlfind
 NOT_OCAMLFIND=not-ocamlfind
 PACKAGES=bos,fmt,camlp5.extprint,camlp5.extend,camlp5.pprintf,pcre,yaml,pa_ppx.deriving_plugins.std,pa_ppx.base.link,pa_ppx.runtime,pa_ppx.testutils,sedlex
 
-OBJ=yayautil.cmo jsontypes.cmo yayalexing.cmo yayapostlexing0.cmo yayapostlexing.cmo jsonparse.cmo tml.cmo
+OBJ=yayutil.cmo jsontypes.cmo yaylexing.cmo yaypostlexing0.cmo yaypostlexing.cmo jsonparse.cmo tml.cmo
 
 all: $(OBJ) yamltest jsontest ocamlyaml_tmltest bs4j_tmltest json_tmltest json_testsuite_test
 
@@ -44,7 +44,7 @@ just-testsuite:: all
 
 .SUFFIXES: .mll .ml .cmo .cmx
 
-yayautil.cmo: yayautil.ml
+yayutil.cmo: yayutil.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES) -syntax camlp5o -c $<
 
 jsontypes.cmo: jsontypes.ml
@@ -59,13 +59,13 @@ tml.cmo: tml.ml
 jsonparse.cmo: jsonparse.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),sedlex -syntax camlp5r -c $<
 
-yayalexing.cmo: yayalexing.ml
+yaylexing.cmo: yaylexing.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package fmt,camlp5.gramlib,sedlex.ppx -c $<
 
-yayapostlexing0.cmo: yayapostlexing0.ml
+yaypostlexing0.cmo: yaypostlexing0.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES) -syntax camlp5o -c $<
 
-yayapostlexing.cmo: yayapostlexing.ml
+yaypostlexing.cmo: yaypostlexing.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES) -syntax camlp5o -c $<
 
 yamltest.cmo: yamltest.ml
@@ -96,11 +96,11 @@ clean:
 
 depend::
 	$(OCAMLFIND) ocamldep $(DEBUG) -package $(PACKAGES) -syntax camlp5o \
-		tml.ml jsontypes.ml yayapostlexing0.ml yayapostlexing.ml \
+		tml.ml jsontypes.ml yaypostlexing0.ml yaypostlexing.ml \
 		yamltest.ml jsontest.ml \
 		ocamlyaml_tmltest.ml bs4j_tmltest.ml \
 		json_tmltest.ml json_testsuite_test.ml > .depend.NEW || true
-	$(OCAMLFIND) ocamldep $(DEBUG) -package sedlex.ppx yayalexing.ml >> .depend.NEW || true
+	$(OCAMLFIND) ocamldep $(DEBUG) -package sedlex.ppx yaylexing.ml >> .depend.NEW || true
 	$(OCAMLFIND) ocamldep $(DEBUG) -package $(PACKAGES) -syntax camlp5r jsonparse.ml >> .depend.NEW
 	mv .depend.NEW .depend
 

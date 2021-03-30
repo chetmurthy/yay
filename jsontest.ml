@@ -3,8 +3,8 @@ open OUnitTest
 open Pa_ppx_testutils
 
 open Jsontypes
-open Yayalexing
-open Yayapostlexing
+open Yaylexing
+open Yaypostlexing
 
 Pa_ppx_base.Pp_MLast.Ploc.pp_loc_verbose := true ;;
 

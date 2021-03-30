@@ -1,4 +1,4 @@
-# YAYAML Ain't YAML
+# YAY Ain't YAML
 
 This is an specification of a *slight* variant of
 YAML, and an implementation of a parser (soon to be joined by printer) for that language.
@@ -10,12 +10,12 @@ spec-compliant as any other YAML parser (other than the "reference
 parsers", since there don't seem to exist any actually-usable YAML
 parsers that are precisely specification-compliant.
 
-The YAYAML specification can be found [here](YAYAML-SPECIFICATION.md).
+The YAY specification can be found [here](YAY-SPECIFICATION.md).
 
 ## This Implementation
 
 To cut to the chase, this project is an implementation of a reference
-YAYAML parser and printer in OCaml.  The easiest way to install is via
+YAY parser and printer in OCaml.  The easiest way to install is via
 opam:
 
 ```
@@ -82,7 +82,7 @@ specification and its implementations.
   Met, but superfluous: any YAML file *will* easily fit in memory, so
   one-pass processing is unnecessary.  Notwithstanding, aside from the
   workaround for Goal #3, I see no reason why one-pass processing is
-  problematic to achieve in YAYAML.
+  problematic to achieve in YAY.
 
 * "6. YAML is expressive and extensible."
 
@@ -96,11 +96,11 @@ specification and its implementations.
   to know how to write their YAML.  They practice "defensive YAML",
   and this is a *prima facie* proof that this goal has not been met.
 
-## YAYAML's Design Goals
+## YAY's Design Goals
 
-YAYAML's specification is structured in the manner of typical language
+YAY's specification is structured in the manner of typical language
 specs: it specifies the character-set of the language, then the
-lexemes, and then the grammar.  The goals of YAYAML (in addition to
+lexemes, and then the grammar.  The goals of YAY (in addition to
 those of YAML) are:
 
 1. enable and deliver straightforward implementation using lex/yacc
@@ -108,16 +108,16 @@ tooling, and hence to ensure that all implementations can have
 identical behaviour (which documents they accept/reject, and in-memory
 semantics of those documents).
 
-2. YAYAML is merely (*merely*) a nicer syntax for writing JSON
-   documents.  Every YAYAML document can be thought of as a JSON
-   document, and JSON documents are accepted as YAYAML "flow style".
+2. YAY is merely (*merely*) a nicer syntax for writing JSON
+   documents.  Every YAY document can be thought of as a JSON
+   document, and JSON documents are accepted as YAY "flow style".
   
-   The user can firmly rely on YAYAML as being merely (*merely*) a
+   The user can firmly rely on YAY as being merely (*merely*) a
    convenient syntax for writing JSON documents.  There are a few
    deviations from this rule, and they will be explained in this
    specification.  Those deviations concern only the first line, and
    multi-document support: it will always be the case that a single
-   JSON document in a file, is accepted as a YAYAML document.
+   JSON document in a file, is accepted as a YAY document.
    
 
 

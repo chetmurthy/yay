@@ -1,4 +1,4 @@
-# YAYAML Specification
+# YAY Specification
 
 This specification is for version 0.1.
 
@@ -8,32 +8,32 @@ Parts of this specification have been copied directly from
 Other parts have been copied directly from
 [the YAML specification](https://yaml.org/spec/1.2/spec.html).
 
-# Goals of YAYAML
+# Goals of YAY
 
-YAYAML starts off with the same goals as YAML:
+YAY starts off with the same goals as YAML:
 
-1. YAYAML is easily readable by humans.
-2. YAYAML data is portable between programming languages.
-3. YAYAML matches the native data structures of agile languages.
-4. YAYAML has a consistent model to support generic tools.
-5. YAYAML supports one-pass processing.
-6. YAYAML is expressive and extensible.
-7. YAYAML is easy to implement and use.
+1. YAY is easily readable by humans.
+2. YAY data is portable between programming languages.
+3. YAY matches the native data structures of agile languages.
+4. YAY has a consistent model to support generic tools.
+5. YAY supports one-pass processing.
+6. YAY is expressive and extensible.
+7. YAY is easy to implement and use.
 
 But adds:
 
-8. YAYAML is specified in terms of familiar lex/yacc concepts, and
+8. YAY is specified in terms of familiar lex/yacc concepts, and
    straightforwardly implementable using those tools.
    
-9. YAYAML facilitates perfect specification-compliance from all
+9. YAY facilitates perfect specification-compliance from all
    implementations.
 
-10. YAYAML is *merely* a nicer syntax for JSON.
+10. YAY is *merely* a nicer syntax for JSON.
 
-    In all sense that matter, YAYAML users can assume that each YAYAML
-    file is equivalent to a JSON file, and YAYAML implementations can
+    In all sense that matter, YAY users can assume that each YAY
+    file is equivalent to a JSON file, and YAY implementations can
     produce that JSON file on-demand.  In addition, every JSON file is
-    already a YAYAML file.
+    already a YAY file.
 
 # Terminology
 
@@ -64,11 +64,11 @@ Also, I'm going to use two extensions:
     those characters specified by "e2"
 
 In this document, a "text" is a stream of characters to be processed.
-A "document" is a stream of characters that express a single YAYAML
-value.  So a YAYAML text MAY contain one or more YAYAML documents.  A
-YAYAML text MUST contain at least one YAYAML document.
+A "document" is a stream of characters that express a single YAY
+value.  So a YAY text MAY contain one or more YAY documents.  A
+YAY text MUST contain at least one YAY document.
 
-# High-Level Description of YAYAML
+# High-Level Description of YAY
 
 For those who are unfamiliar with YAML,
 [this](https://yaml.org/spec/1.2/spec.html) is the specification, and
@@ -76,7 +76,7 @@ For those who are unfamiliar with YAML,
 is a YAML tutorial.  There are many such tutorials, and I'm not
 recommending this one; just providing an example.
 
-YAYAML can be described as YAML with the following additions:
+YAY can be described as YAML with the following additions:
 
 * C, C++ comments
 * C++ raw-string-literals
@@ -91,18 +91,18 @@ the following deletions:
   expressing them.
 * multiline unquoted YAML scalars with whitespace
 
-In addition, the special characters used to express YAYAML structure
+In addition, the special characters used to express YAY structure
 (viz. "[", "]", "-", etc) cannot appear in unquoted YAML scalars: when
 one wants to use those, there are always C++ raw-string-literals.
 
 # Syntactic Specification
 
-The syntax of YAYAML is specified in terms of character set, lexemes,
+The syntax of YAY is specified in terms of character set, lexemes,
 and a grammar.
 
 ## Character Set
 
-The YAYAML character-set is Unicode.  Implementations MUST accept
+The YAY character-set is Unicode.  Implementations MUST accept
 UTF-8, and MAY convert other files in other codepages to UTF-8 (rather
 than reject).  This specfication does NOT discuss how other codepages
 are represented in storage, and it is assumed that those are "transfer
@@ -148,9 +148,9 @@ and an end-of-input token:
 EOI = end-of-input or eof
 ```
 
-### YAYAML Version Line
+### YAY Version Line
 
-YAYAML texts consist in an optional version-line, followed by a stream
+YAY texts consist in an optional version-line, followed by a stream
 of documents.
 
 If present, the version-line MUST begin at the first character of the
