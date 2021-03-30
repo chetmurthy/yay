@@ -12,13 +12,13 @@ Other parts have been copied directly from
 
 YAY starts off with the same goals as YAML:
 
-1. YAY is easily readable by humans.
-2. YAY data is portable between programming languages.
-3. YAY matches the native data structures of agile languages.
-4. YAY has a consistent model to support generic tools.
-5. YAY supports one-pass processing.
-6. YAY is expressive and extensible.
-7. YAY is easy to implement and use.
+1. YAML is easily readable by humans.
+2. YAML data is portable between programming languages.
+3. YAML matches the native data structures of agile languages.
+4. YAML has a consistent model to support generic tools.
+5. YAML supports one-pass processing.
+6. YAML is expressive and extensible.
+7. YAML is easy to implement and use.
 
 But adds:
 
@@ -91,14 +91,25 @@ the following deletions:
   expressing them.
 * multiline unquoted YAML scalars with whitespace
 
-In addition, the special characters used to express YAY structure
-(viz. "[", "]", "-", etc) cannot appear in unquoted YAML scalars: when
-one wants to use those, there are always C++ raw-string-literals.
+In addition
+
+* the special characters used to express YAY structure (viz. "[", "]",
+  "-", etc) cannot appear in unquoted YAML scalars: when one wants to
+  use those, there are always C++ raw-string-literals
+
+* everywhere (outside of quotations) whitespace and newlines are
+  insignificant.  At the left margin, spaces are significant and tabs
+  are forbidden (b/c easy to make mistakes) but that is all:
+  otherwise, whitespace is just insignificant.
+  
+  This may sound paradoxical, but what matters is *indentation*, not
+  whitespace.  Whitespace at the left margin is a form of whitespace
+  (and is significant), but elsewhere, whitespace is ignored.
 
 # Syntactic Specification
 
-The syntax of YAY is specified in terms of character set, lexemes,
-and a grammar.
+The syntax of YAY is specified in terms of character set, lexemes, and
+a grammar.
 
 ## Character Set
 
