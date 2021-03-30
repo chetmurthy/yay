@@ -108,21 +108,28 @@ than reject).  This specfication does NOT discuss how other codepages
 are represented in storage, and it is assumed that those are "transfer
 encoding" issue.
 
+First we define the lexemes; then, we define a "lexically correct text".
+
 ## Lexemes
 
-In the following, uppercase defintions (e.g. "INDENT") will be used
+In the following, uppercase defintions (e.g. "DECIMAL") will be used
 later in the specificadtion: they correspond to the "tokens"; the
 other definitions are auxiliary.
-
-First we define the lexemes; then, we define a "lexically correct text".
 
 ### White Space
 
 There are three kinds of white space:
+
 ```
 EOL = "\r" ? "\n"
-INDENT = ' '*
-LINEWS = [' ' '\t']
+margin = ' '*
+linews = [' ' '\t']
+```
+
+and an end-of-input token:
+
+```
+EOI = end-of-input or eof
 ```
 
 ### YAYAML Version Line
@@ -223,10 +230,84 @@ yaml_dqstring_char = (yaml_basic_dqstring_char | yaml_dqstring_escaped_char )
 YAMLDQSTRING = '"'  *(yaml_dqstring_char | yaml_dqstring_linebreak_1 | Plus(yaml_dqstring_linebreak_2)) '"'
 ```
 
+Finally, there are C++ raw-string-literals:
+
+```
+RAWSTRING = "R" '"' [ident] "(" raw_string_content ")" [ident] '"'
+raw_string_content = * any_char
+```
+with three constraints:
+
+* the two idents above are identical (though perhaps both empty)
+* the raw_string_content MUST NOT contain followed by the ident string
+
+This constraint is complicated to express, and I refer the reader to
+the C++ specification for more precision, but the intent should be
+clear.
+
+Note well that YAMLSQSTRING, YAMLDQSTRING, and RAWSTRING, can all
+contain newlines.
+
+
 ### Comments
 
+Note that Perl and C++ comments extend to the end of line or input (whichever comes first).
+```
 perl_comment = '#' *(Complement('\n'))
 cpp_comment = "//" *(Complement('\n'))
 c_comment = "/*" *(Complement( '*') | "*" Complement('/')) *'*' "*/"
 COMMENT = perl_comment | cpp_comment | c_comment
+```
 
+## Lexically Correct Text
+
+The lexemes above cannot be used as-is (that is, handed as a group to
+lex(1)) to construct a lexer, b/c they're ambiguous.  So we specify
+how they are to be used to lexically process the text.  This implies a
+state in the lexer over and above the buffer itself, but it's pretty
+minimal.
+
+a rawtoken is:
+```
+rawtoke = LBRACKET | LBRACE | RBRACKET |
+	      RBRACE | COLON | COMMA | DASH |
+		  BAR | BARDASH | BARPLUS |
+	      GT | GTDASH | GTPLUS |
+	      DASHDASHDASH |DOTDOTDOT |
+	      DECIMAL | HEX | OCTAL |
+	      JSONSTRING | YAMLSCALAR | YAMLSQSTRING | YAMLDQSTRING | RAWSTRING
+```
+
+A lexically correct text is:
+
+```
+[VERSIONSTRING] *(margin *(rawtoken|linews|comment) EOL) [margin *(rawtoken|linews|comment)]
+
+```
+
+This implies that the lexer must track whether it is at the beginning
+of input, and the beginning of a line.  Otherwise, it merely lexes the
+next `rawtoken` or `EOL` , skipping `linews` and `comment`s.
+
+### Implementation of Lexing
+
+The above description of lexing leads naturally to three separate lexers.
+
+1. Lexer for beginning of input
+
+
+This lexer recognizes the `VERSIONSTRING` lexeme, returning the string
+or failure.
+
+2. Lexer for beginning of line
+
+This lexer recognizes the `MARGIN` lexeme, returning success or
+failure.
+
+3. Lexer for rawtoken, comment, EOL
+
+This lexer recognizes all the tokens in `rawtoken`, as well as
+`linews`, `comment` and `EOL`.  On `linews` or `comment`, it recurses.
+On empty input, it returns `EOI', and otherwise it returns failure
+(which signifies bad input).  It returns any token returned by
+`rawtoken`, as well as `EOL` and `EOI`.
