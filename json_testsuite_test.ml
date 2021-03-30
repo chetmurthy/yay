@@ -32,17 +32,17 @@ let errorlist = [
 
 module JSONTestsuite = struct
 
-let printer x = Fmt.(str "%a" Jsontypes.pp_yaml x)
-let cmp = Jsontypes.equal_yaml
+let printer x = Fmt.(str "%a" Yaytypes.pp_yaml x)
+let cmp = Yaytypes.equal_yaml
 
 let of_string_exn s =
   s
-  |> Jsonparse.(parse_string parse_json_eoi)
-  |> Jsontypes.json2yaml
+  |> Yayparse0.(parse_string parse_json_eoi)
+  |> Yaytypes.json2yaml
 
 
 let yojson_of_string_exn jsons =
-  Jsontypes.json2yaml (Yojson.Basic.from_string jsons)
+  Yaytypes.json2yaml (Yojson.Basic.from_string jsons)
 
 let file_contents fname =
   fname
@@ -70,14 +70,14 @@ let assert_raises_exn_pattern pattern f =
 let exec ok fname =
   let jsons = file_contents fname in
   if ok then
-    let expect = Jsontypes.canon_yaml (yojson_of_string_exn jsons) in
-    let got = Jsontypes.canon_yaml (of_string_exn jsons) in
+    let expect = Yaytypes.canon_yaml (yojson_of_string_exn jsons) in
+    let got = Yaytypes.canon_yaml (of_string_exn jsons) in
     assert_equal ~printer
       expect
       got
   else
     assert_raises_exn_pattern ""
-      (fun () -> Jsontypes.canon_yaml (of_string_exn jsons))
+      (fun () -> Yaytypes.canon_yaml (of_string_exn jsons))
 
 end
 

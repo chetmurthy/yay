@@ -90,7 +90,7 @@
 
 *)
 
-open Jsontypes
+open Yaytypes
 
 let gen_of_string s =
   let pos = ref 0 in

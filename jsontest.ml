@@ -2,7 +2,7 @@ open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
 
-open Jsontypes
+open Yaytypes
 open Yaylexing
 open Yaypostlexing
 
@@ -349,15 +349,15 @@ b
       )
   ]
 
-open Jsonparse
+open Yayparse0
 
-let printer = Jsontypes.show_yaml
-let docs_printer = Jsontypes.show_yaml_list
-let cmp = Jsontypes.equal_yaml
-let docs_cmp = Jsontypes.equal_yaml_list
+let printer = Yaytypes.show_yaml
+let docs_printer = Yaytypes.show_yaml_list
+let cmp = Yaytypes.equal_yaml
+let docs_cmp = Yaytypes.equal_yaml_list
 
-let of_string_exn s = s |> parse_string parse_doc_eoi |> Jsontypes.json2yaml
-let docs_of_string_exn s = s |> parse_string parse_docs_eoi |> List.map Jsontypes.json2yaml
+let of_string_exn s = s |> parse_string parse_doc_eoi |> Yaytypes.json2yaml
+let docs_of_string_exn s = s |> parse_string parse_docs_eoi |> List.map Yaytypes.json2yaml
 
 let parsing = "parsing" >::: [
     "simple" >:: (fun ctxt ->

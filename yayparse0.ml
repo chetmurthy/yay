@@ -1,7 +1,7 @@
 open Asttools ;
 open Pa_ppx_base.Pp_MLast ;
 open Pa_ppx_runtime.Exceptions ;
-open Jsontypes ;
+open Yaytypes ;
 open Yaylexing ;
 open Yaypostlexing ;
 

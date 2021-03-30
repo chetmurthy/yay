@@ -191,14 +191,14 @@ let find_yaml t sectname =
 
 module OCamlYAML = struct
 
-let printer x = Fmt.(str "%a" Jsontypes.pp_yaml_list x)
-let cmp = Jsontypes.equal_yaml_list
+let printer x = Fmt.(str "%a" Yaytypes.pp_yaml_list x)
+let cmp = Yaytypes.equal_yaml_list
 
 let parse_yaml t =
   match find_yaml t "in-yaml" with
     Some yamlp ->
     let yamls = extract_yaml t yamlp in
-      (Jsontypes.canon_yaml (Yaml.of_string_exn yamls))
+      (Yaytypes.canon_yaml (Yaml.of_string_exn yamls))
   | None -> failwith (Fmt.(str "%s: no YAML found" t.filename))
 
 let exec t =
@@ -213,8 +213,8 @@ let exec t =
     let yamls = extract_yaml t yamlp in
     let jsons = String.concat "\n" (List.tl jsonl) in
     assert_equal ~printer
-      (List.map Jsontypes.canon_yaml (List.map Jsontypes.json2yaml (list_of_stream (Yojson.Basic.stream_from_string jsons))))
-      [(Jsontypes.canon_yaml (Yaml.of_string_exn yamls))]
+      (List.map Yaytypes.canon_yaml (List.map Yaytypes.json2yaml (list_of_stream (Yojson.Basic.stream_from_string jsons))))
+      [(Yaytypes.canon_yaml (Yaml.of_string_exn yamls))]
 
   | (Some inyamlp
     ,None
@@ -243,19 +243,19 @@ end
 
 module BS4J = struct
 
-let printer x = Fmt.(str "%a" Jsontypes.pp_yaml_list x)
-let cmp = Jsontypes.equal_yaml_list
+let printer x = Fmt.(str "%a" Yaytypes.pp_yaml_list x)
+let cmp = Yaytypes.equal_yaml_list
 
 let docs_of_string_exn s =
   s
-  |> Jsonparse.(parse_string parse_docs_eoi)
-  |> List.map Jsontypes.json2yaml
+  |> Yayparse0.(parse_string parse_docs_eoi)
+  |> List.map Yaytypes.json2yaml
 
 let parse_yaml t =
   match find_yaml t "in-yaml" with
     Some yamlp ->
     let yamls = extract_yaml t yamlp in
-      (List.map Jsontypes.canon_yaml (docs_of_string_exn yamls))
+      (List.map Yaytypes.canon_yaml (docs_of_string_exn yamls))
   | None -> failwith (Fmt.(str "%s: no YAML found" t.filename))
 
 let exec t =
@@ -270,8 +270,8 @@ let exec t =
     let yamls = extract_yaml t yamlp in
     let jsons = String.concat "\n" (List.tl jsonl) in
     assert_equal ~printer
-      (List.map Jsontypes.canon_yaml (List.map Jsontypes.json2yaml (list_of_stream (Yojson.Basic.stream_from_string jsons))))
-      (List.map Jsontypes.canon_yaml (docs_of_string_exn yamls))
+      (List.map Yaytypes.canon_yaml (List.map Yaytypes.json2yaml (list_of_stream (Yojson.Basic.stream_from_string jsons))))
+      (List.map Yaytypes.canon_yaml (docs_of_string_exn yamls))
 
   | (Some inyamlp
     ,None
@@ -281,14 +281,14 @@ let exec t =
     let outyamls = extract_yaml t outyamlp in
     assert_equal ~printer
       [(Yaml.of_string_exn outyamls)]
-      (List.map Jsontypes.canon_yaml (docs_of_string_exn inyamls))
+      (List.map Yaytypes.canon_yaml (docs_of_string_exn inyamls))
 
   | (Some yamlp
     ,_, _, Some errorl) ->
     let yamls = extract_yaml t yamlp in
     assert_raises_exn_pattern
       ""
-      (fun () -> List.map Jsontypes.canon_yaml (docs_of_string_exn yamls))
+      (fun () -> List.map Yaytypes.canon_yaml (docs_of_string_exn yamls))
 
   | (Some _
     ,None, None, None) ->
@@ -300,19 +300,19 @@ end
 
 module JSON = struct
 
-let printer x = Fmt.(str "%a" Jsontypes.pp_yaml_list x)
-let cmp = Jsontypes.equal_yaml_list
+let printer x = Fmt.(str "%a" Yaytypes.pp_yaml_list x)
+let cmp = Yaytypes.equal_yaml_list
 
 let of_string_exn s =
   s
-  |> Jsonparse.(parse_string parse_flow_json_stream_eoi)
-  |> List.map Jsontypes.json2yaml
+  |> Yayparse0.(parse_string parse_flow_json_stream_eoi)
+  |> List.map Yaytypes.json2yaml
 
 let parse_json t =
   match find_sect t "in-json" with
     Some jsonl ->
     let jsons = String.concat "\n" (List.tl jsonl) in
-      (List.map Jsontypes.canon_yaml (of_string_exn jsons))
+      (List.map Yaytypes.canon_yaml (of_string_exn jsons))
   | None -> failwith (Fmt.(str "%s: no JSON found" t.filename))
 
 let exec t =
@@ -320,8 +320,8 @@ let exec t =
     Some jsonl ->
     let jsons = String.concat "\n" (List.tl jsonl) in
     assert_equal ~printer
-      (List.map Jsontypes.canon_yaml (List.map Jsontypes.json2yaml (list_of_stream (Yojson.Basic.stream_from_string jsons))))
-      (List.map Jsontypes.canon_yaml (of_string_exn jsons))
+      (List.map Yaytypes.canon_yaml (List.map Yaytypes.json2yaml (list_of_stream (Yojson.Basic.stream_from_string jsons))))
+      (List.map Yaytypes.canon_yaml (of_string_exn jsons))
 
   | None ->
     warning Fmt.(str "%s: no JSON to test" t.filename)

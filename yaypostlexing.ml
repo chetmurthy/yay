@@ -1,4 +1,4 @@
-open Jsontypes
+open Yaytypes
 open Yaylexing
 
 module Wellformed = struct

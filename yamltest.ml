@@ -19,9 +19,9 @@ let assert_raises_exn_pattern pattern f =
     )
     f
 
-let printer x = Fmt.(str "%a" Jsontypes.pp_yaml x)
+let printer x = Fmt.(str "%a" Yaytypes.pp_yaml x)
 
-let cmp = Jsontypes.equal_yaml
+let cmp = Yaytypes.equal_yaml
 
 let preview = "preview" >::: [
     "2.1" >:: (fun ctxt ->
