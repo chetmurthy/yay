@@ -37,7 +37,6 @@ value compatible_lexer lb =
   | GT -> ("",">")
   | GTDASH -> ("",">-")
   | GTPLUS -> ("",">+")
-  | PLUS -> ("","+")
   | YAMLSTRING "false" -> ("","false")
   | YAMLSTRING "true" -> ("","true")
   | YAMLSTRING "null" -> ("","null")

@@ -505,7 +505,6 @@ type token =
   | DOTDOTDOT
   | BAR | BARDASH | BARPLUS
   | GT | GTDASH | GTPLUS
-  | PLUS
   | DECIMAL of string
   | HEXADECIMAL of string
   | OCTAL of string
@@ -707,7 +706,6 @@ let rec rawtoken st =
   | ">" -> (GT,pos())
   | ">-" -> (GTDASH,pos())
   | ">+" -> (GTPLUS,pos())
-  | "+" -> (PLUS,pos())
   | "," -> (COMMA,pos())
   | "-" -> (DASH,pos())
   | "---" -> (DASHDASHDASH,pos())
