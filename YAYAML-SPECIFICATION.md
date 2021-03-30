@@ -309,25 +309,92 @@ next `rawtoken` or `EOL` , skipping `linews` and `comment`s.
 
 The above description of lexing leads naturally to three separate lexers.
 
-1. Lexer for beginning of input
+1. Lexer for beginning of input (`version_lexer`)
 
 
 This lexer recognizes the `VERSIONSTRING` lexeme, returning the string
 or failure.
 
-2. Lexer for beginning of line
+2. Lexer for beginning of line (`margin_lexer`)
 
 This lexer recognizes the `MARGIN` lexeme, returning success or
 failure.
 
-3. Lexer for rawtoken, comment, EOL
+3. Lexer for rawtoken, comment, EOL (`token_lexer`)
 
 This lexer recognizes all the tokens in `rawtoken`, as well as
 `linews`, `comment` and `EOL`.  On `linews` or `comment`, it recurses.
 On empty input, it returns `EOI', and otherwise it returns failure
-(which signifies bad input).  It returns any token returned by
+(which signifies bad input).  It returns any token in the set of
 `rawtoken`, as well as `EOL` and `EOI`.
+
+## Producing a lexically correct straem of tokens
+
+The module that performs this, has two state-variables (in addition to the lexer):
+
+* `at_start` -- true if we're at the start of the text
+* `at_bol` -- true if we're at the beginning of a line (that is, at
+  the start of the text, or after an `EOL` as been read)
+
+1. initially `at_start=true; at_bol=true`
+
+2. `at_start=true`: use `version_lexer` and
+
+  * set `at_start=false`
+  * if it produces a token, then return that
+  * else proceed to step 3.
+
+3. `at_start=false; at_bol=true`: use `margin_lexer`, which always
+   succeeds, then set `at_bol=false` and proceed to step 4.
+
+4. `at_bol=false`: use `token_lexer`:
+
+  * if it produces `EOL`, set `at_bol=true` and proceed to step 3
+  * otherwise, return the token
+
+This stream of tokens is the input to the next phase.
 
 ## Transducing a Lexically Correct Stream to the Final Lexemes
 
-Once we have a lexically correct stream, 
+Once we have a lexically correct stream, we need to transduce it, to
+add `INDENT` and `DEDENT` tokens.  There are two things going on here:
+
+1. This phase has state variables for the current margin, saved
+   margins, and the depth of nested "{}", "[]" seen so far.  It is
+   convenient to use the OCaml types (should be straightforward to
+   implement in other languages):
+   
+   ```
+   type style_t = FLOW | BLOCK of int
+   type style_stack_t = style_t list
+   ```
+
+	with initial value `style_stack = [BLOCK 0]`
+
+2. matching `LBRACE`, `RBRACE` and `LBRACKET`, `RBRACKET`tokens are
+   parenthesis-counted, and within them, no `INDENT`/`DEDENT`
+   processing occurs.  tokens are passed-along.
+
+   Concretely
+
+   * when we see `LBRACE`/`LBRACKET`, we push `FLOW` on `style_stack`
+   * when we see `RBRACE`/`RBRACKET`, we pop from `style_stack`,
+     checking that the value popped is `FLOW' (otherwise we have a
+     syntax error)
+
+
+3. For all tokens not in the following subset, they are passed-along
+   (though `LBRACE`, `LBRACKET` trigger the processing of part 2.
+
+   ```
+   YAMLSTRING YAMLSQSTRING YAMLDQSTRING RAWSTRING
+   DECIMAL HEXADECIMAL OCTAL
+   DASHDASHDASH DOTDOTDOT EOF
+   DASH
+   COLON
+   ```
+    In this step, we're going to compute a list of tokens we will return.
+
+    * For all tokens except `DASH`, `COLON`, 
+   
+   
