@@ -5,6 +5,9 @@ This specification is for version 0.1.
 Parts of this specification have been copied directly from
 [the JSON specification](https://tools.ietf.org/html/rfc7159).
 
+Other parts have been copied directly from
+[the YAML specification](https://yaml.org/spec/1.2/spec.html).
+
 # Goals of YAYAML
 
 YAYAML starts off with the same goals as YAML:
@@ -42,6 +45,24 @@ document are to be interpreted as described in
 The grammatical rules in this document are to be interpreted as
 described in [RFC5234](https://tools.ietf.org/html/rfc5234).
 
+NOTE WELL: I'm aiming for this level of precision, but probably there
+are error.
+
+Also, I'm going to use two extensions:
+
+* the character-set-complement operation ("Complement e") below.
+  The meaning is this:
+
+  * expression "e" is an expression that specifies a set of characters.
+  * the meaning is all characters that are *not* in the
+    character-set denoted by "e"
+
+* the character-set subtraction operation ("Subtract (e1, e2)")
+
+  * expressinos "e1", "e2" specify character-sets
+  * the meaning is the set of characters specified by "e1", *minus*
+    those characters specified by "e2"
+
 In this document, a "text" is a stream of characters to be processed.
 A "document" is a stream of characters that express a single YAYAML
 value.  So a YAYAML text MAY contain one or more YAYAML documents.  A
@@ -70,9 +91,9 @@ the following deletions:
   expressing them.
 * multiline unquoted YAML scalars with whitespace
 
-In addition, YAYAML has a set of special characters, that cannot
-appear in unquoted YAML scalars: when one wants to use those, there
-are always C++ raw-string-literals.
+In addition, the special characters used to express YAYAML structure
+(viz. "[", "]", "-", etc) cannot appear in unquoted YAML scalars: when
+one wants to use those, there are always C++ raw-string-literals.
 
 # Syntactic Specification
 
@@ -89,6 +110,19 @@ encoding" issue.
 
 ## Lexemes
 
+In the following, uppercase defintions (e.g. "INDENT") will be used
+later in the specificadtion: they correspond to the "tokens"; the
+other definitions are auxiliary.
+
+### White Space
+
+There are three kinds of white space:
+```
+EOL = "\r" ? "\n"
+INDENT = ' '*
+LINEWS = [' ' '\t']
+```
+
 ### YAYAML Version Line
 
 YAYAML texts are expressed an optional version-line, followed by a
@@ -97,30 +131,95 @@ stream of documents.
 If present, the version-line MUST begin at the first character of the
 text, and consists in:
 
-### White Space
+```
+YAMLVERSION = "YAML-" digit+ "." digit+ eol
+```
+### The tokens
 
-There are three kinds of white space:
-```
-eol = "\r" ? "\n"
-marginws = ' '*
-linews = [' ' '\t']
-```
-
-```1
-yayaml-version = "YAML-" digit+ "." digit+ eol
-```
 The rest of the lexemes are:
 
-special characters:
+#### Special Characters
+
 ```
-begin-array     = %x5B  ; [ left square bracket
-begin-object    = %x7B  ; { left curly bracket
-end-array       = %x5D  ; ] right square bracket
-end-object      = %x7D  ; } right curly bracket
-name-separator  = %x3A  ; : colon
-value-separator = %x2C  ; , comma
+LBRACKET     = %x5B  ; [ left square bracket
+LBRACE    = %x7B  ; { left curly bracket
+RBRACKET       = %x5D  ; ] right square bracket
+RBRACE      = %x7D  ; } right curly bracket
+COLON  = %x3A  ; : colon
+COMMA = %x2C  ; , comma
+DASH = %x2D ; - dash
+BAR = "|"
+BARDASH = "|-"
+BARPLUS = "|+"
+GT = ">"
+GTDASH = ">-"
+GTPLUS = ">+"
+DASHDASHDASH = "---"
+DOTDOTDOT = "..."
 ```
 
+#### Numbers
+```
+octdigit = '0'..'7'
+digit = '0'..'9'
+hexdigit = '0'..'9' | 'a'..'f' | 'A'..'F'
+int = '0' | ( '1'..'9' *digit )
+frac = '.' *digit
+ne_frac = '.' 1*digit
+exp = ('e' | 'E')  [('-' | '+')] 1*digit
+decimal_float_number = ['-']  ((int [frac] [exp] ) | (ne_frac [exp] ))
+decimal_float_not_numbers = ".inf" | "-.inf" | ".NaN"
 
+DECIMAL = (decimal_float_number | decimal_float_not_numbers)
+HEX = ['-'] "0x" 1*hexdigit
+OCTAL = ['-'] "0o" 1*octdigit
+```
+#### Strings
+```
+letter = 'a'..'z' | 'A'..'Z'
 
+alphanum = letter | digit
+ident = letter *alphanum
 
+json_unescaped =  0x20 .. 0x21 | 0x23 .. 0x5B | 0x5D .. 0x10FFFF
+json_escaped = "\\" ( 0x22 | 0x5C | 0x2F | 0x62 | 0x66 | 0x6E | 0x72 | 0x74 | (0x75, 4hexdigit ) )
+json_string_char = json_unescaped | json_escaped
+JSONSTRING = "J" '"'  *json_string_char '"'
+
+yamlscalar_char = Complement ('-' | '[' | ']' | '{' | '}' | '|' | '>' | ':' | ',' | '#' | '/' | '\\' | '"' | '\r' | '\n')
+yamlscalar_startchar = Subtract (yamlscalar_char, (linews| '.' | '!' | '&' | '*'))
+yamlscalar_endchar = Subtract (yamlscalar_char, linews)
+YAMLSCALAR = yamlscalar_startchar [*yamlscalar_char yamlscalar_endchar]
+
+yaml_basic_string_char = 0x9 | 0x20 .. 0x10ffff
+yaml_unescaped_sqstring_char = Subtract((yaml_basic_string_char | '\n'), '\'')
+YAMLSQSTRING = "'"  *(yaml_unescaped_sqstring_char | "''") "'"
+
+yaml_basic_dqstring_char = Sub(yaml_basic_string_char, ('"' | '\\'))
+yaml_dqstring_escaped_char = "\\"
+                                 ( "0" (* ns-esc-null *)
+                                 | "a" (* ns-esc-bell *)
+                                 | "b" (* ns-esc-backspace *)
+                                 | "t" | "\t" (* ns-esc-horizontal-tab *)
+                                 | "n" (* ns-esc-line-feed *)
+                                 | "v" (* ns-esc-vertical-tab *)
+                                 | "f" (* ns-esc-form-feed *)
+                                 | "r" (* ns-esc-carriage-return *)
+                                 | "e" (* ns-esc-escape *)
+                                 | ' ' (* ns-esc-space *)
+                                 | '\"' (* ns-esc-double-quote *)
+                                 | '/' (* ns-esc-slash *)
+                                 | '\\' (* ns-esc-backslash *)
+                                 | 'N' (* ns-esc-next-line *)
+                                 | '_' (*ns-esc-non-breaking-space *)
+                                 | "L" (* ns-esc-line-separator *)
+                                 | "P" (* ns-esc-paragraph-separator *)
+                                 | ( "x" 2hexdigit) (* ns-esc-8-bit *)
+                                 | ( "u" 4hexdigit) (* ns-esc-16-bit *)
+                                 | ( "U" 8hexdigit) (* ns-esc-32-bit *) )
+
+yaml_dqstring_linebreak_1 = "\\" "\n" *(' '|'\t') ["\\"]
+yaml_dqstring_linebreak_2 = "\n" *(' '|'\t')
+yaml_dqstring_char = (yaml_basic_dqstring_char | yaml_dqstring_escaped_char )
+YAMLDQSTRING = "\""  *(yaml_dqstring_char | yaml_dqstring_linebreak_1 | Plus(yaml_dqstring_linebreak_2)) '"'
+```
