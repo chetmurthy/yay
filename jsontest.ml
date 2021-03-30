@@ -2,6 +2,7 @@ open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
 open Yayalexing
+open Yayapostlexing0
 
 Pa_ppx_base.Pp_MLast.Ploc.pp_loc_verbose := true ;;
 

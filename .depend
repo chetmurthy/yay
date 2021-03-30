@@ -38,6 +38,14 @@ yamltest.cmo : \
     jsontypes.cmo
 yamltest.cmx : \
     jsontypes.cmx
+yayapostlexing.cmo : \
+    yayalexing.cmo
+yayapostlexing.cmx : \
+    yayalexing.cmx
+yayapostlexing0.cmo : \
+    yayalexing.cmo
+yayapostlexing0.cmx : \
+    yayalexing.cmx
 yayalexing.cmo :
 yayalexing.cmx :
 jsonparse.cmo : \

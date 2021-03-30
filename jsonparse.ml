@@ -1,8 +1,9 @@
 open Asttools ;
-open Yayalexing ;
-open Jsontypes ;
 open Pa_ppx_base.Pp_MLast ;
 open Pa_ppx_runtime.Exceptions ;
+open Jsontypes ;
+open Yayalexing ;
+open Yayapostlexing0 ;
 
 type t += [
     Exc of Ploc.t and t[@rebind_to Ploc.Exc;][@name "Ploc.Exc";]

@@ -3,7 +3,7 @@ OCAMLFIND=ocamlfind
 NOT_OCAMLFIND=not-ocamlfind
 PACKAGES=bos,fmt,camlp5.extprint,camlp5.extend,camlp5.pprintf,pcre,yaml,pa_ppx.deriving_plugins.std,pa_ppx.base.link,pa_ppx.runtime,pa_ppx.testutils,sedlex
 
-OBJ=jsontypes.cmo yayalexing.cmo jsonparse.cmo tml.cmo
+OBJ=jsontypes.cmo yayalexing.cmo yayapostlexing0.cmo yayapostlexing.cmo jsonparse.cmo tml.cmo
 
 all: $(OBJ) yamltest jsontest ocamlyaml_tmltest bs4j_tmltest json_tmltest json_testsuite_test
 
@@ -58,6 +58,12 @@ jsonparse.cmo: jsonparse.ml
 yayalexing.cmo: yayalexing.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package fmt,camlp5.gramlib,sedlex.ppx -c $<
 
+yayapostlexing0.cmo: yayapostlexing0.ml
+	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES) -syntax camlp5o -c $<
+
+yayapostlexing.cmo: yayapostlexing.ml
+	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES) -syntax camlp5o -c $<
+
 yamltest.cmo: yamltest.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -syntax camlp5o -c $<
 
@@ -86,11 +92,11 @@ clean:
 
 depend::
 	$(OCAMLFIND) ocamldep $(DEBUG) -package $(PACKAGES) -syntax camlp5o \
-		tml.ml jsontypes.ml \
+		tml.ml jsontypes.ml yayapostlexing0.ml yayapostlexing.ml \
 		yamltest.ml jsontest.ml \
 		ocamlyaml_tmltest.ml bs4j_tmltest.ml \
 		json_tmltest.ml json_testsuite_test.ml > .depend.NEW || true
-	$(OCAMLFIND) ocamldep $(DEBUG) -package sedlex.ppx yayalexingz.ml >> .depend.NEW || true
+	$(OCAMLFIND) ocamldep $(DEBUG) -package sedlex.ppx yayalexing.ml >> .depend.NEW || true
 	$(OCAMLFIND) ocamldep $(DEBUG) -package $(PACKAGES) -syntax camlp5r jsonparse.ml >> .depend.NEW
 	mv .depend.NEW .depend
 
