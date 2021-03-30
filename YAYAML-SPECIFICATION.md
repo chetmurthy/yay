@@ -108,13 +108,29 @@ than reject).  This specfication does NOT discuss how other codepages
 are represented in storage, and it is assumed that those are "transfer
 encoding" issue.
 
-First we define the lexemes; then, we define a "lexically correct text".
-
 ## Lexemes
 
-In the following, uppercase defintions (e.g. "DECIMAL") will be used
-later in the specificadtion: they correspond to the "tokens"; the
-other definitions are auxiliary.
+We assume that with each "token" below, comes a "position" (at a
+minimum, its offset from the start of the line).  This is trivial to
+implement in most lexers, and is sometimes built-in.
+
+The definition of the stream of lexemes produced by the lexer comes in
+three phases:
+
+1. define the raw lexemes and tokens.  A token is a lexeme that is
+   actually produced by the lexer.  In the following, uppercase
+   definitions (e.g. "DECIMAL") correspond to the "tokens"; the other
+   definitions are auxiliary.
+
+   We will define three separate groups of lexemes/tokens, which
+   naturally leads to an implementation as three entrypoints in lex.
+
+2. define the meaning of a "lesically correct stream".  This can be
+   viewed as a bit of state that drives which of the three lexers
+   above, are called at any particular moment.
+
+3. define a *transduction* of the stream of tokens from step 2, that
+   introduces new synthetic tokens ("INDENT" and "DEDENT").
 
 ### White Space
 
@@ -236,7 +252,7 @@ Finally, there are C++ raw-string-literals:
 RAWSTRING = "R" '"' [ident] "(" raw_string_content ")" [ident] '"'
 raw_string_content = * any_char
 ```
-with three constraints:
+with two constraints:
 
 * the two idents above are identical (though perhaps both empty)
 * the raw_string_content MUST NOT contain followed by the ident string
@@ -256,7 +272,7 @@ Note that Perl and C++ comments extend to the end of line or input (whichever co
 perl_comment = '#' *(Complement('\n'))
 cpp_comment = "//" *(Complement('\n'))
 c_comment = "/*" *(Complement( '*') | "*" Complement('/')) *'*' "*/"
-COMMENT = perl_comment | cpp_comment | c_comment
+comment = perl_comment | cpp_comment | c_comment
 ```
 
 ## Lexically Correct Text
@@ -311,3 +327,7 @@ This lexer recognizes all the tokens in `rawtoken`, as well as
 On empty input, it returns `EOI', and otherwise it returns failure
 (which signifies bad input).  It returns any token returned by
 `rawtoken`, as well as `EOL` and `EOI`.
+
+## Transducing a Lexically Correct Stream to the Final Lexemes
+
+Once we have a lexically correct stream, 
