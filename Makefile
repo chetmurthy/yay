@@ -88,7 +88,7 @@ json_testsuite_test.cmo: json_testsuite_test.ml
 #	perl -p -i -e 's,#.*,,' $@
 
 clean:
-	rm -rf *test *.cm* *.o yamllexer.ml _build *.log *.cache
+	rm -rf *test *.cm* *.o _build *.log *.cache
 
 
 depend::
