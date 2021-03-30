@@ -5,7 +5,7 @@ PACKAGES=bos,fmt,camlp5.extprint,camlp5.extend,camlp5.pprintf,pcre,yaml,pa_ppx.d
 
 OBJ=yayutil.cmo yaytypes.cmo yaylexing.cmo yaypostlexing0.cmo yaypostlexing.cmo yayparse0.cmo tml.cmo
 
-all: $(OBJ) yamltest jsontest ocamlyaml_tmltest bs4j_tmltest json_tmltest json_testsuite_test
+all: $(OBJ) yamltest yaytest ocamlyaml_tmltest bs4j_tmltest json_tmltest json_testsuite_test
 
 yamltest: $(OBJ) yamltest.cmo
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -linkpkg -linkall -syntax camlp5r $^ -o $@
@@ -22,12 +22,12 @@ json_tmltest: $(OBJ) json_tmltest.cmo
 json_testsuite_test: $(OBJ) json_testsuite_test.cmo
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -linkpkg -linkall -syntax camlp5r $^ -o $@
 
-jsontest: $(OBJ) jsontest.cmo
+yaytest: $(OBJ) yaytest.cmo
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -linkpkg -linkall -syntax camlp5r $^ -o $@
 
 test:: all
 	mkdir -p _build
-	./jsontest -runner sequential || true
+	./yaytest -runner sequential || true
 #	./yamltest || true
 
 testsuite:: test
@@ -50,7 +50,7 @@ yayutil.cmo: yayutil.ml
 yaytypes.cmo: yaytypes.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES) -syntax camlp5o -c $<
 
-jsontest.cmo: jsontest.ml
+yaytest.cmo: yaytest.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -syntax camlp5o -c $<
 
 tml.cmo: tml.ml
@@ -83,9 +83,6 @@ json_tmltest.cmo: json_tmltest.ml
 json_testsuite_test.cmo: json_testsuite_test.ml
 	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -syntax camlp5o -c $<
 
-jsontest.cmo: jsontest.ml
-	$(OCAMLFIND) ocamlc $(DEBUG) -package $(PACKAGES),oUnit -syntax camlp5o -c $<
-
 .mll.ml:
 	ocamllex $<
 #	perl -p -i -e 's,#.*,,' $@
@@ -97,7 +94,7 @@ clean:
 depend::
 	$(OCAMLFIND) ocamldep $(DEBUG) -package $(PACKAGES) -syntax camlp5o \
 		tml.ml yaytypes.ml yaypostlexing0.ml yaypostlexing.ml \
-		yamltest.ml jsontest.ml \
+		yamltest.ml yaytest.ml \
 		ocamlyaml_tmltest.ml bs4j_tmltest.ml \
 		json_tmltest.ml json_testsuite_test.ml > .depend.NEW || true
 	$(OCAMLFIND) ocamldep $(DEBUG) -package sedlex.ppx yaylexing.ml >> .depend.NEW || true

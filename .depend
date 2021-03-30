@@ -4,32 +4,28 @@ bs4j_tmltest.cmx : \
     tml.cmx
 json_testsuite_test.cmo : \
     yaytypes.cmo \
+    yayparse0.cmo \
     tml.cmo
 json_testsuite_test.cmx : \
     yaytypes.cmx \
+    yayparse0.cmx \
     tml.cmx
 json_tmltest.cmo : \
     tml.cmo
 json_tmltest.cmx : \
     tml.cmx
-jsontest.cmo : \
-    yaytypes.cmo \
-    yaypostlexing.cmo \
-    yaylexing.cmo
-jsontest.cmx : \
-    yaytypes.cmx \
-    yaypostlexing.cmx \
-    yaylexing.cmx
 ocamlyaml_tmltest.cmo : \
     tml.cmo
 ocamlyaml_tmltest.cmx : \
     tml.cmx
 tml.cmo : \
     yayutil.cmo \
-    yaytypes.cmo
+    yaytypes.cmo \
+    yayparse0.cmo
 tml.cmx : \
     yayutil.cmx \
-    yaytypes.cmx
+    yaytypes.cmx \
+    yayparse0.cmx
 yamltest.cmo : \
     yaytypes.cmo
 yamltest.cmx : \
@@ -46,9 +42,27 @@ yaypostlexing0.cmo : \
 yaypostlexing0.cmx : \
     yaytypes.cmx \
     yaylexing.cmx
+yaytest.cmo : \
+    yaytypes.cmo \
+    yaypostlexing.cmo \
+    yayparse0.cmo \
+    yaylexing.cmo
+yaytest.cmx : \
+    yaytypes.cmx \
+    yaypostlexing.cmx \
+    yayparse0.cmx \
+    yaylexing.cmx
 yaytypes.cmo :
 yaytypes.cmx :
 yaylexing.cmo : \
     yaytypes.cmo
 yaylexing.cmx : \
     yaytypes.cmx
+yayparse0.cmo : \
+    yaytypes.cmo \
+    yaypostlexing.cmo \
+    yaylexing.cmo
+yayparse0.cmx : \
+    yaytypes.cmx \
+    yaypostlexing.cmx \
+    yaylexing.cmx
