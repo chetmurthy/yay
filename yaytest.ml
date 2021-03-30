@@ -187,6 +187,14 @@ R"a(foo)a"
   R"((foo))"
 |})
       )
+  ; "rawstring-3" >:: (fun ctxt ->
+        assert_equal ~printer
+          [(INDENT (0, 2)); RAWSTRING {|R"abc((foo)abc)abc"|};
+           (DEDENT (0, 2)); EOF]
+          (tokens_of_string {|
+  R"abc((foo)abc)abc"
+|})
+      )
   ; "strings-2" >:: (fun ctxt ->
         assert_equal ~printer
           [(YAMLSTRING "a"); COLON; (INDENT (0, 1)); (INDENT (1, 2)); (YAMLSTRING "b");
@@ -455,6 +463,20 @@ a:
           (`String ("foo"))
           (of_string_exn {|
 R"a(foo)a"
+|})
+      )
+  ; "rawstring-2" >:: (fun ctxt ->
+        assert_equal ~printer
+          (`String ("(foo)"))
+          (of_string_exn {|
+  R"((foo))"
+|})
+      )
+  ; "rawstring-3" >:: (fun ctxt ->
+        assert_equal ~printer
+          (`String ("(foo)abc"))
+          (of_string_exn {|
+  R"abc((foo)abc)abc"
 |})
       )
   ; "rawstring-fold" >:: (fun ctxt ->
