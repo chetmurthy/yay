@@ -743,12 +743,12 @@ let rec jsontoken0 st =
       | (RBRACE, _) -> failwith "jsontoken: '}' found in block style"
       | (LBRACE, _) as t -> St.push_flow st ; t
       | (COLON, _) as t -> increment_indent_with st t
-
-      | ((GT|GTDASH|GTPLUS), _) as t -> t
-      | ((BAR|BARDASH|BARPLUS), _) as t -> t
-
+      | ((YAMLSTRING _|YAMLSQSTRING _|YAMLDQSTRING _|RAWSTRING _
+         |DECIMAL _|HEXADECIMAL _|OCTAL _
+         |DASH|DASHDASHDASH|DOTDOTDOT|EOF), _) as t -> handle_indents_with st t
       | (NEWLINE, _) -> St.set_bol st true ; jsontoken0 st
-      | t -> handle_indents_with st t
+
+      | t -> t
   end
 
   | { pushback = [] ; style_stack = FLOW :: _ ; _ } -> begin
