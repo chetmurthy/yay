@@ -2,13 +2,9 @@ open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
 
-let warning s = Fmt.(pf stderr "%s\n%!" s)
+open Yayautil
 
-let list_of_stream strm =
-let rec listrec acc = parser
-  [< 't ; strm >] -> listrec (t::acc) strm
-| [< >] -> List.rev acc
-in listrec [] strm
+let warning s = Fmt.(pf stderr "%s\n%!" s)
 
 let tml_re = Str.regexp ".*\\.tml$"
 

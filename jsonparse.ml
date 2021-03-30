@@ -3,7 +3,7 @@ open Pa_ppx_base.Pp_MLast ;
 open Pa_ppx_runtime.Exceptions ;
 open Jsontypes ;
 open Yayalexing ;
-open Yayapostlexing0 ;
+open Yayapostlexing ;
 
 type t += [
     Exc of Ploc.t and t[@rebind_to Ploc.Exc;][@name "Ploc.Exc";]
@@ -18,8 +18,7 @@ value positions_to_loc ?{comments=""} (spos, epos) =
   Ploc.make_loc spos.pos_fname spos.pos_lnum spos.pos_bol (spos.pos_cnum, epos.pos_cnum) comments
 ;
 
-value compatible_lexer lb =
-  let ((tok, pos) as t) = Final.jsontoken lb in
+value convert_token (tok, pos) =
   let pos = positions_to_loc pos in
   let tok = match tok with [
     BS4J s -> ("BS4J",s)
@@ -59,9 +58,9 @@ value compatible_lexer lb =
 ;
 
 value lex_string s =
-  let st = Final.St.mk (Sedlexing.Latin1.from_gen (gen_of_string s)) in
+  let tokf = Final.tokenize (Sedlexing.Latin1.from_gen (gen_of_string s)) in
   let rec lexrec acc =
-    match compatible_lexer st with [
+    match convert_token (tokf ()) with [
       (("EOI",_),_) as t -> List.rev [t::acc]
     | t -> lexrec [t::acc]
     ] in lexrec []
@@ -77,13 +76,14 @@ value has_nonws s = Pcre.pmatch ~{rex=nonws_re} s;
 value lexer_func_of_sedlex_state_located lexfun cs =
   let read1 () =
     try Some (Stream.next cs) with [ Stream.Failure -> None ] in
-  let lb = Final.St.mk (Sedlexing.Latin1.from_gen read1)
+  let lb = Sedlexing.Latin1.from_gen read1
   in
-  let next_token_func () = lexfun lb in
+  let tokf = lexfun lb in
+  let next_token_func () = convert_token (tokf ()) in
   Plexing.make_stream_and_location next_token_func
 ;
 
-value lexer = lexer_func_of_sedlex_state_located compatible_lexer ;
+value lexer = lexer_func_of_sedlex_state_located Final.tokenize ;
 value lexer = {Plexing.tok_func = lexer;
  Plexing.tok_using _ = (); Plexing.tok_removing _ = ();
  Plexing.tok_match = Plexing.default_match;

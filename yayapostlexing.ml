@@ -1,8 +1,9 @@
+open Jsontypes
 open Yayalexing
 
 module Wellformed = struct
 
-type state_t = { at_start : bool ; at_bol : bool }
+type state_t = { at_start : bool ; at_bol : bool ; flow_depth : int }
 
 let stream lexbuf =
   let rec strec st =
@@ -10,18 +11,26 @@ let stream lexbuf =
       {at_start=true;_} -> begin
       match Lexers.versiontag lexbuf with
         Some (vs,p) -> [< '(BS4J vs,p) ; strec { st with at_start=false} >]
-        | None -> strec st
+        | None -> strec { st with at_start=false}
     end
-    | {at_start=false; at_bol=true} ->
+
+    | {at_start=false; at_bol=true ; flow_depth = 0} ->
       ignore (Lexers.indentspaces lexbuf) ;
       strec { st with at_bol=false }
 
-    | {at_start=false; at_bol=false} -> begin
+    | { flow_depth ; _ } -> begin
         match Lexers.rawtoken lexbuf with
           (NEWLINE,_) -> strec { st with at_bol = true }
+        | ((RBRACE|RBRACKET),_) as t ->
+          if flow_depth = 0 then failwith "Wellformed.stream: ']' or '}' not in flow style"
+          else [< 't ; strec { st with flow_depth = flow_depth - 1 } >]
+
+        | ((LBRACE|LBRACKET),_) as t ->
+          [< 't ; strec { st with flow_depth = flow_depth + 1 } >]
+
         | t -> [< 't ; strec st >]
       end
-  in strec { at_start=true ; at_bol=true }
+  in strec { at_start=true ; at_bol=true ; flow_depth = 0 }
 end
 
 module Indented = struct
@@ -70,23 +79,54 @@ module Indented = struct
          |DASH|DASHDASHDASH|DOTDOTDOT|EOF), loc) as t ; strm >] -> begin
       match sst with
         (BLOCK m)::_ ->
-        let n = extract_indent_position t in
-        match (t, Stdlib.compare n m) with
-          ((DASH, _), 0) ->
-          [< 't ; '(INDENT(n,n+1), loc); stream (BLOCK (n+1)::sst) strm >]
-        | ((DASH,_), 1) ->
-          [< '(INDENT(m,n), loc) ; 't ; '(INDENT(n,n+1), loc) ; stream ((BLOCK (n+1))::(BLOCK n)::sst) strm >]
+        let n = extract_indent_position t in begin
+          match (t, Stdlib.compare n m) with
+            ((DASH, _), 0) ->
+            [< 't ; '(INDENT(n,n+1), loc); stream (BLOCK (n+1)::sst) strm >]
+          | ((DASH,_), 1) ->
+            [< '(INDENT(m,n), loc) ; 't ; '(INDENT(n,n+1), loc) ; stream ((BLOCK (n+1))::(BLOCK n)::sst) strm >]
 
-        | (_, 0) ->
-          [< 't ; stream sst strm >]
+          | (_, 0) ->
+            [< 't ; stream sst strm >]
 
-        | (_, 1) ->
-          [< '(INDENT(n,m), loc) ; 't ; stream ((BLOCK n)::sst) strm >]
+          | (_, 1) ->
+            [< '(INDENT(m,n), loc) ; 't ; stream ((BLOCK n)::sst) strm >]
 
-        | ((_, loc), -1) ->
-          let (rev_pushback, new_sst) = pop_styles loc [] (sst, n) in
-          let new_pushback = List.rev (t::rev_pushback) in
-          [< Stream.of_list new_pushback ; stream new_sst strm >]
+          | ((_, loc), -1) ->
+            let (rev_pushback, new_sst) = pop_styles loc [] (sst, n) in
+            let new_pushback = List.rev (t::rev_pushback) in
+            [< Stream.of_list new_pushback ; stream new_sst strm >]
+        end
 
+      | FLOW::_ ->
+        [< 't ; stream sst strm >]
+
+      | [] -> failwith "Indented.stream: Internal error: should never get here"
     end
+
+  | [< 't ; strm >] -> [< 't ; stream sst strm >]
+end
+
+module Final = struct
+
+let token_stream lb =
+  let strm = Wellformed.stream lb in
+  Indented.(stream [BLOCK 0] strm)
+
+let tokenize lb =
+  let strm = token_stream lb in
+  fun () -> Stream.next strm
+
+let of_string f s =
+  let lb = Sedlexing.Latin1.from_gen (gen_of_string s) in
+  f lb
+
+let ocamllex_string s =
+  let tokf = tokenize (Sedlexing.Latin1.from_gen (gen_of_string s)) in
+  let rec lexrec acc =
+    match tokf () with
+      (EOF,_) as t -> List.rev (t::acc)
+    | t -> lexrec (t::acc)
+  in lexrec []
+
 end

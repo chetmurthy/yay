@@ -1,8 +1,10 @@
 open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
+
+open Jsontypes
 open Yayalexing
-open Yayapostlexing0
+open Yayapostlexing
 
 Pa_ppx_base.Pp_MLast.Ploc.pp_loc_verbose := true ;;
 
@@ -25,31 +27,6 @@ let assert_raises_exn_pattern pattern f =
     )
     f
 
-type token = Yayalexing.token =
-  | BS4J of string
-  | LBRACKET
-  | RBRACKET
-  | LBRACE
-  | RBRACE
-  | COLON
-  | COMMA
-  | DASH
-  | DASHDASHDASH
-  | DOTDOTDOT
-  | BAR | BARDASH | BARPLUS
-  | GT | GTDASH | GTPLUS
-  | DECIMAL of string
-  | HEXADECIMAL of string
-  | OCTAL of string
-  | JSONSTRING of string
-  | RAWSTRING of string
-  | YAMLSTRING of string
-  | YAMLSQSTRING of string
-  | YAMLDQSTRING of string
-  | INDENT of int * int
-  | DEDENT of int * int
-  | NEWLINE (* internal token *)
-  | EOF  [@@deriving show { with_path = false},eq]
 type toks = token list [@@deriving show { with_path = false},eq]
 
 let printer = show_toks

@@ -1,3 +1,4 @@
+open Jsontypes
 open Yayalexing
 
 module Final = struct
@@ -138,10 +139,14 @@ let rec jsontoken0 st =
 
 let jsontoken st = jsontoken0 st
 
+let tokenize lb =
+  let st = St.mk lb in
+  fun () -> jsontoken st
+
 let ocamllex_string s =
-  let st = St.mk (Sedlexing.Latin1.from_gen (gen_of_string s)) in
+  let tokf = tokenize (Sedlexing.Latin1.from_gen (gen_of_string s)) in
   let rec lexrec acc =
-    match jsontoken st with
+    match tokf () with
       (EOF,_) as t -> List.rev (t::acc)
     | t -> lexrec (t::acc)
   in lexrec []

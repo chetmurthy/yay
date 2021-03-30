@@ -66,3 +66,29 @@ let canon_json (y : json) : json =
   | `List l -> `List (List.map yrec l)
   | `Assoc l -> `Assoc (List.stable_sort Stdlib.compare (List.map (fun (k,v) -> (k,yrec v)) l))
   in yrec y
+
+type token =
+  | BS4J of string
+  | LBRACKET
+  | RBRACKET
+  | LBRACE
+  | RBRACE
+  | COLON
+  | COMMA
+  | DASH
+  | DASHDASHDASH
+  | DOTDOTDOT
+  | BAR | BARDASH | BARPLUS
+  | GT | GTDASH | GTPLUS
+  | DECIMAL of string
+  | HEXADECIMAL of string
+  | OCTAL of string
+  | JSONSTRING of string
+  | RAWSTRING of string
+  | YAMLSTRING of string
+  | YAMLSQSTRING of string
+  | YAMLDQSTRING of string
+  | INDENT of int * int
+  | DEDENT of int * int
+  | NEWLINE (* internal token *)
+  | EOF [@@deriving show { with_path = false},eq]

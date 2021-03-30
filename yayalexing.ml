@@ -90,6 +90,8 @@
 
 *)
 
+open Jsontypes
+
 let gen_of_string s =
   let pos = ref 0 in
   fun () ->
@@ -165,32 +167,6 @@ let cpp_comment = [%sedlex.regexp? "//" , Star(Compl '\n') ]
 let c_comment = [%sedlex.regexp? "/*" , Star(Compl '*'| "*", Compl '/'), Star '*', "*/" ]
 
 let comment = [%sedlex.regexp? perl_comment | cpp_comment | c_comment ]
-
-type token =
-  | BS4J of string
-  | LBRACKET
-  | RBRACKET
-  | LBRACE
-  | RBRACE
-  | COLON
-  | COMMA
-  | DASH
-  | DASHDASHDASH
-  | DOTDOTDOT
-  | BAR | BARDASH | BARPLUS
-  | GT | GTDASH | GTPLUS
-  | DECIMAL of string
-  | HEXADECIMAL of string
-  | OCTAL of string
-  | JSONSTRING of string
-  | RAWSTRING of string
-  | YAMLSTRING of string
-  | YAMLSQSTRING of string
-  | YAMLDQSTRING of string
-  | INDENT of int * int
-  | DEDENT of int * int
-  | NEWLINE (* internal token *)
-  | EOF
 
 module Lexers = struct
 

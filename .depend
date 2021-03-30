@@ -15,10 +15,12 @@ json_tmltest.cmo : \
 json_tmltest.cmx : \
     tml.cmx
 jsontest.cmo : \
+    yayapostlexing.cmo \
     yayalexing.cmo \
     jsontypes.cmo \
     jsonparse.cmo
 jsontest.cmx : \
+    yayapostlexing.cmx \
     yayalexing.cmx \
     jsontypes.cmx \
     jsonparse.cmx
@@ -29,9 +31,11 @@ ocamlyaml_tmltest.cmo : \
 ocamlyaml_tmltest.cmx : \
     tml.cmx
 tml.cmo : \
+    yayautil.cmo \
     jsontypes.cmo \
     jsonparse.cmo
 tml.cmx : \
+    yayautil.cmx \
     jsontypes.cmx \
     jsonparse.cmx
 yamltest.cmo : \
@@ -39,18 +43,26 @@ yamltest.cmo : \
 yamltest.cmx : \
     jsontypes.cmx
 yayapostlexing.cmo : \
-    yayalexing.cmo
+    yayalexing.cmo \
+    jsontypes.cmo
 yayapostlexing.cmx : \
-    yayalexing.cmx
+    yayalexing.cmx \
+    jsontypes.cmx
 yayapostlexing0.cmo : \
-    yayalexing.cmo
+    yayalexing.cmo \
+    jsontypes.cmo
 yayapostlexing0.cmx : \
-    yayalexing.cmx
-yayalexing.cmo :
-yayalexing.cmx :
+    yayalexing.cmx \
+    jsontypes.cmx
+yayalexing.cmo : \
+    jsontypes.cmo
+yayalexing.cmx : \
+    jsontypes.cmx
 jsonparse.cmo : \
+    yayapostlexing.cmo \
     yayalexing.cmo \
     jsontypes.cmo
 jsonparse.cmx : \
+    yayapostlexing.cmx \
     yayalexing.cmx \
     jsontypes.cmx
