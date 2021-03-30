@@ -328,7 +328,7 @@ On empty input, it returns `EOI', and otherwise it returns failure
 (which signifies bad input).  It returns any token in the set of
 `rawtoken`, as well as `EOL` and `EOI`.
 
-## Producing a lexically correct straem of tokens
+## Producing a lexically correct stream of tokens
 
 The module that performs this, has two state-variables (in addition to the lexer):
 
