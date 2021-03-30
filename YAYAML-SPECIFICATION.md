@@ -114,6 +114,8 @@ In the following, uppercase defintions (e.g. "INDENT") will be used
 later in the specificadtion: they correspond to the "tokens"; the
 other definitions are auxiliary.
 
+First we define the lexemes; then, we define a "lexically correct text".
+
 ### White Space
 
 There are three kinds of white space:
@@ -125,8 +127,8 @@ LINEWS = [' ' '\t']
 
 ### YAYAML Version Line
 
-YAYAML texts are expressed an optional version-line, followed by a
-stream of documents.
+YAYAML texts consist in an optional version-line, followed by a stream
+of documents.
 
 If present, the version-line MUST begin at the first character of the
 text, and consists in:
@@ -134,11 +136,8 @@ text, and consists in:
 ```
 YAMLVERSION = "YAML-" digit+ "." digit+ eol
 ```
-### The tokens
 
-The rest of the lexemes are:
-
-#### Special Characters
+### Special Characters
 
 ```
 LBRACKET     = %x5B  ; [ left square bracket
@@ -158,7 +157,7 @@ DASHDASHDASH = "---"
 DOTDOTDOT = "..."
 ```
 
-#### Numbers
+### Numbers
 ```
 octdigit = '0'..'7'
 digit = '0'..'9'
@@ -174,7 +173,7 @@ DECIMAL = (decimal_float_number | decimal_float_not_numbers)
 HEX = ['-'] "0x" 1*hexdigit
 OCTAL = ['-'] "0o" 1*octdigit
 ```
-#### Strings
+### Strings
 ```
 letter = 'a'..'z' | 'A'..'Z'
 
@@ -221,5 +220,13 @@ yaml_dqstring_escaped_char = "\\"
 yaml_dqstring_linebreak_1 = "\\" "\n" *(' '|'\t') ["\\"]
 yaml_dqstring_linebreak_2 = "\n" *(' '|'\t')
 yaml_dqstring_char = (yaml_basic_dqstring_char | yaml_dqstring_escaped_char )
-YAMLDQSTRING = "\""  *(yaml_dqstring_char | yaml_dqstring_linebreak_1 | Plus(yaml_dqstring_linebreak_2)) '"'
+YAMLDQSTRING = '"'  *(yaml_dqstring_char | yaml_dqstring_linebreak_1 | Plus(yaml_dqstring_linebreak_2)) '"'
 ```
+
+### Comments
+
+perl_comment = '#' *(Complement('\n'))
+cpp_comment = "//" *(Complement('\n'))
+c_comment = "/*" *(Complement( '*') | "*" Complement('/')) *'*' "*/"
+COMMENT = perl_comment | cpp_comment | c_comment
+
