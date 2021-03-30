@@ -3,20 +3,24 @@ bs4j_tmltest.cmo : \
 bs4j_tmltest.cmx : \
     tml.cmx
 json_testsuite_test.cmo : \
-    tml.cmo
+    tml.cmo \
+    jsontypes.cmo \
+    jsonparse.cmo
 json_testsuite_test.cmx : \
-    tml.cmx
+    tml.cmx \
+    jsontypes.cmx \
+    jsonparse.cmx
 json_tmltest.cmo : \
     tml.cmo
 json_tmltest.cmx : \
     tml.cmx
 jsontest.cmo : \
+    yayalexing.cmo \
     jsontypes.cmo \
-    jsontoken.cmo \
     jsonparse.cmo
 jsontest.cmx : \
+    yayalexing.cmx \
     jsontypes.cmx \
-    jsontoken.cmx \
     jsonparse.cmx
 jsontypes.cmo :
 jsontypes.cmx :
@@ -34,11 +38,11 @@ yamltest.cmo : \
     jsontypes.cmo
 yamltest.cmx : \
     jsontypes.cmx
-jsontoken.cmo :
-jsontoken.cmx :
+yayalexing.cmo :
+yayalexing.cmx :
 jsonparse.cmo : \
-    jsontypes.cmo \
-    jsontoken.cmo
+    yayalexing.cmo \
+    jsontypes.cmo
 jsonparse.cmx : \
-    jsontypes.cmx \
-    jsontoken.cmx
+    yayalexing.cmx \
+    jsontypes.cmx

@@ -1,7 +1,7 @@
 open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
-open Jsontoken
+open Yayalexing
 
 Pa_ppx_base.Pp_MLast.Ploc.pp_loc_verbose := true ;;
 
@@ -24,7 +24,7 @@ let assert_raises_exn_pattern pattern f =
     )
     f
 
-type token = Jsontoken.token =
+type token = Yayalexing.token =
   | BS4J of string
   | LBRACKET
   | RBRACKET
@@ -54,7 +54,7 @@ type toks = token list [@@deriving show { with_path = false},eq]
 let printer = show_toks
 
 let tokens_of_string s =
-  List.map fst (ocamllex_string s)
+  List.map fst (Final.ocamllex_string s)
 
 let lexing = "lexing" >::: [
     "simple" >:: (fun ctxt ->

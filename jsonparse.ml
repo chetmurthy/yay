@@ -1,5 +1,5 @@
 open Asttools ;
-open Jsontoken ;
+open Yayalexing ;
 open Jsontypes ;
 open Pa_ppx_base.Pp_MLast ;
 open Pa_ppx_runtime.Exceptions ;
@@ -18,7 +18,7 @@ value positions_to_loc ?{comments=""} (spos, epos) =
 ;
 
 value compatible_lexer lb =
-  let ((tok, pos) as t) = Jsontoken.jsontoken lb in
+  let ((tok, pos) as t) = Final.jsontoken lb in
   let pos = positions_to_loc pos in
   let tok = match tok with [
     BS4J s -> ("BS4J",s)
@@ -58,7 +58,7 @@ value compatible_lexer lb =
 ;
 
 value lex_string s =
-  let st = St.mk (Sedlexing.Latin1.from_gen (gen_of_string s)) in
+  let st = Final.St.mk (Sedlexing.Latin1.from_gen (gen_of_string s)) in
   let rec lexrec acc =
     match compatible_lexer st with [
       (("EOI",_),_) as t -> List.rev [t::acc]
@@ -76,7 +76,7 @@ value has_nonws s = Pcre.pmatch ~{rex=nonws_re} s;
 value lexer_func_of_sedlex_state_located lexfun cs =
   let read1 () =
     try Some (Stream.next cs) with [ Stream.Failure -> None ] in
-  let lb = St.mk (Sedlexing.Latin1.from_gen read1)
+  let lb = Final.St.mk (Sedlexing.Latin1.from_gen read1)
   in
   let next_token_func () = lexfun lb in
   Plexing.make_stream_and_location next_token_func
@@ -163,10 +163,10 @@ EXTEND
     [ [ fca = must_fold_chomp_add ; r_or_y = scalar_rawstring0_or_yamlstrings ->
         match r_or_y with [
           Left (s,l) ->
-          let s = unquote_rawstring fca l s in
+          let s = Unescape.rawstring fca l s in
           `String s
         | Right l ->
-          `String (foldchomp_yamlstrings fca l)
+          `String (Unescape.yamlstrings fca l)
         ]
 
       | s = scalar_nonstring -> s
@@ -175,15 +175,15 @@ EXTEND
          -> `Assoc [(string_of_scalar s,v) :: l]
 
       | (s,l) = scalar_rawstring0 ->
-         let s = unquote_rawstring (False, False, False) l s in
+         let s = Unescape.rawstring (False, False, False) l s in
         `String s
 
       | (s,l) = scalar_rawstring0 ; ":" ; v=block_json ;
          rest = LIST0 [ s=key_scalar ; ":" ; v=block_json -> (string_of_scalar s,v) ] ->
-         let s = unquote_rawstring (False, False, False) l s in
+         let s = Unescape.rawstring (False, False, False) l s in
          `Assoc [(s,v) :: rest]
 
-      | s = YAMLSTRING ; l = LIST0 [ s = YAMLSTRING -> s ] -> `String (foldchomp_yamlstrings (True, True, False) [s::l])
+      | s = YAMLSTRING ; l = LIST0 [ s = YAMLSTRING -> s ] -> `String (Unescape.yamlstrings (True, True, False) [s::l])
 
       | s = YAMLSTRING ; ":" ; v=block_json ;
          l = LIST0 [ s=key_scalar ; ":" ; v=block_json -> (string_of_scalar s,v) ]
@@ -260,9 +260,9 @@ EXTEND
   ;
 
   scalar_other_string:
-    [ [ s = JSONSTRING -> (unquote_jsonstring s)
-      | s=YAMLSQSTRING -> (unquote_yaml_sqstring s)
-      | s=YAMLDQSTRING -> (unquote_yaml_dqstring s)
+    [ [ s = JSONSTRING -> (Unescape.jsonstring s)
+      | s=YAMLSQSTRING -> (Unescape.yamlsqstring s)
+      | s=YAMLDQSTRING -> (Unescape.yamldqstring s)
     ] ]
   ;
 
@@ -270,7 +270,7 @@ EXTEND
     [ [ n = DECIMAL -> `Float (if n = ".NaN" then nan
                                else if n = ".inf" then infinity
                                else if n = "-.inf" then neg_infinity
-                               else convert_float n)
+                               else Unescape.float n)
       | n = HEXADECIMAL -> `Float (float_of_int (int_of_string n))
       | n = OCTAL -> `Float (float_of_int (int_of_string n))
       | "null" -> `Null
@@ -280,7 +280,7 @@ EXTEND
   ;
 
   key_scalar:
-    [ [ (s, l) = scalar_rawstring0 -> `String (unquote_rawstring (False, False, False) l s)
+    [ [ (s, l) = scalar_rawstring0 -> `String (Unescape.rawstring (False, False, False) l s)
       | s = YAMLSTRING -> `String s
       | s = scalar_other_string -> `String s
       | s = scalar_nonstring -> s
@@ -289,16 +289,16 @@ EXTEND
 
   flow_scalar:
     [ [ fca = fold_chomp_add ; (s,l) = [ s = RAWSTRING -> (s,loc) ] ->
-        `String (unquote_rawstring fca l s)
+        `String (Unescape.rawstring fca l s)
 
       | s = YAMLSTRING -> `String s
-      | s = JSONSTRING -> `String (unquote_jsonstring s)
-      | s=YAMLSQSTRING -> `String (unquote_yaml_sqstring s)
-      | s=YAMLDQSTRING -> `String (unquote_yaml_dqstring s)
+      | s = JSONSTRING -> `String (Unescape.jsonstring s)
+      | s=YAMLSQSTRING -> `String (Unescape.yamlsqstring s)
+      | s=YAMLDQSTRING -> `String (Unescape.yamldqstring s)
       | n = DECIMAL -> `Float (if n = ".NaN" then nan
                                else if n = ".inf" then infinity
                                else if n = "-.inf" then neg_infinity
-                               else convert_float n)
+                               else Unescape.float n)
       | n = HEXADECIMAL -> `Float (float_of_int (int_of_string n))
       | n = OCTAL -> `Float (float_of_int (int_of_string n))
       | "null" -> `Null
@@ -320,16 +320,16 @@ EXTEND
   ;
 
   json_string:
-    [ [ s = YAMLDQSTRING -> unquote_jsonstring ~{prefixed=False} s
+    [ [ s = YAMLDQSTRING -> Unescape.jsonstring ~{prefixed=False} s
     ] ]
   ;
 
   scalar:
-    [ [ s = YAMLDQSTRING -> `String (unquote_jsonstring ~{prefixed=False} s)
+    [ [ s = YAMLDQSTRING -> `String (Unescape.jsonstring ~{prefixed=False} s)
       | n = DECIMAL -> `Float (if n = ".NaN" then nan
                                else if n = ".inf" then infinity
                                else if n = "-.inf" then neg_infinity
-                               else convert_float ~{json=True} n)
+                               else Unescape.float ~{json=True} n)
       | n = HEXADECIMAL -> Ploc.raise loc (Failure Fmt.(str "BS4J(JSON mode): hexadecimals are not permitted %a" Dump.string n))
       | n = OCTAL -> Ploc.raise loc (Failure Fmt.(str "BS4J(JSON mode): octals are not permitted %a" Dump.string n))
       | "null" -> `Null
