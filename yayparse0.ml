@@ -1,6 +1,7 @@
 open Asttools ;
 open Pa_ppx_base.Pp_MLast ;
 open Pa_ppx_runtime.Exceptions ;
+open Yayutil ;
 open Yaytypes ;
 open Yaylexing ;
 open Yaypostlexing ;
@@ -331,8 +332,8 @@ EXTEND
                                else if n = ".inf" then infinity
                                else if n = "-.inf" then neg_infinity
                                else Unescape.float ~{json=True} n)
-      | n = HEXADECIMAL -> Ploc.raise loc (Failure Fmt.(str "BS4J(JSON mode): hexadecimals are not permitted %a" Dump.string n))
-      | n = OCTAL -> Ploc.raise loc (Failure Fmt.(str "BS4J(JSON mode): octals are not permitted %a" Dump.string n))
+      | n = HEXADECIMAL -> Fmt.(failwithf loc "BS4J(JSON mode): hexadecimals are not permitted %a" Dump.string n)
+      | n = OCTAL -> Fmt.(failwith "BS4J(JSON mode): octals are not permitted %a" Dump.string n)
       | "null" -> `Null
       | "true" -> `Bool True
       | "false" -> `Bool False

@@ -11,3 +11,9 @@ let rec listrec acc = parser
 | [< 't ; strm >] -> listrec (t::acc) strm
 | [< >] -> List.rev acc
 in listrec [] strm
+
+let failwith_loc loc s = Ploc.raise loc (Failure s)
+
+(* borrowed from ounit *)
+let failwithf loc fmt =
+  Fmt.kstrf (failwith_loc loc) fmt

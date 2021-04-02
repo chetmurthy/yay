@@ -59,10 +59,12 @@ yaylexing.cmo : \
 yaylexing.cmx : \
     yaytypes.cmx
 yayparse0.cmo : \
+    yayutil.cmo \
     yaytypes.cmo \
     yaypostlexing.cmo \
     yaylexing.cmo
 yayparse0.cmx : \
+    yayutil.cmx \
     yaytypes.cmx \
     yaypostlexing.cmx \
     yaylexing.cmx
