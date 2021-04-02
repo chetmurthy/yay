@@ -332,8 +332,8 @@ EXTEND
                                else if n = ".inf" then infinity
                                else if n = "-.inf" then neg_infinity
                                else Unescape.float ~{json=True} n)
-      | n = HEXADECIMAL -> Fmt.(failwithf loc "BS4J(JSON mode): hexadecimals are not permitted %a" Dump.string n)
-      | n = OCTAL -> Fmt.(failwith "BS4J(JSON mode): octals are not permitted %a" Dump.string n)
+      | n = HEXADECIMAL -> Fmt.(failwith_locf loc "BS4J(JSON mode): hexadecimals are not permitted %a" Dump.string n)
+      | n = OCTAL -> Fmt.(failwithf "BS4J(JSON mode): octals are not permitted %a" Dump.string n)
       | "null" -> `Null
       | "true" -> `Bool True
       | "false" -> `Bool False

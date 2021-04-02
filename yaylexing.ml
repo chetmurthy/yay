@@ -90,6 +90,7 @@
 
 *)
 
+open Yayutil
 open Yaytypes
 
 let gen_of_string s =
@@ -356,10 +357,10 @@ and unrec2 hi =
       let u = code_of_surrogate_pair hi lo in
       Buffer.add_utf_8_uchar buf (Uchar.of_int u) ;
       unrec1 ()
-    else failwith Fmt.(str "unquote_jsonstring: invalid unicode surrogates: (0x%04x, 0x%04x)" hi lo)
+    else Fmt.(failwithf "unquote_jsonstring: invalid unicode surrogates: (0x%04x, 0x%04x)" hi lo)
 
   | _ ->
-    failwith Fmt.(str "unquote_jsonstring: missing low surrogate after hi: 0x%04x" hi)
+    Fmt.(failwithf "unquote_jsonstring: missing low surrogate after hi: 0x%04x" hi)
 
   in unrec0 ()
 

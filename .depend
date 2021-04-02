@@ -3,10 +3,12 @@ bs4j_tmltest.cmo : \
 bs4j_tmltest.cmx : \
     tml.cmx
 json_testsuite_test.cmo : \
+    yayutil.cmo \
     yaytypes.cmo \
     yayparse0.cmo \
     tml.cmo
 json_testsuite_test.cmx : \
+    yayutil.cmx \
     yaytypes.cmx \
     yayparse0.cmx \
     tml.cmx
@@ -55,8 +57,10 @@ yaytest.cmx : \
 yaytypes.cmo :
 yaytypes.cmx :
 yaylexing.cmo : \
+    yayutil.cmo \
     yaytypes.cmo
 yaylexing.cmx : \
+    yayutil.cmx \
     yaytypes.cmx
 yayparse0.cmo : \
     yayutil.cmo \

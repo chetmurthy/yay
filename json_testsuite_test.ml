@@ -2,6 +2,8 @@ open OUnit2
 open OUnitTest
 open Pa_ppx_testutils
 
+open Yayutil
+
 let testsuite_dir = "JSONTestSuite"
 
 let skiplist = [
@@ -127,7 +129,7 @@ let make_test fname =
               )
           ]
       | _ ->
-        failwith Fmt.(str "%s: unhandled case in JSONTestsuite.exec" fname)
+        Fmt.(failwithf "%s: unhandled case in JSONTestsuite.exec" fname)
     end
 
 let exec1 fname =

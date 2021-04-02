@@ -98,9 +98,9 @@ let tags_line_re = Str.regexp "--- tags: *\\(.*\\)"
 let tags t =
   let line = match List.assoc "tags" t.sections with
       line::_ -> line
-    | exception Not_found -> failwith (Fmt.(str "%s: missing tags line" t.filename)) in
+    | exception Not_found -> Fmt.(failwithf "%s: missing tags line" t.filename) in
   match match_extract tags_line_re [1] line with
-    None -> failwith (Fmt.(str "%s: missing malformed line" t.filename))
+    None -> Fmt.(failwithf "%s: missing malformed line" t.filename)
   | Some [s] -> String.split_on_char ' ' s
   | _ -> assert false
 
@@ -173,7 +173,7 @@ let extract_yaml t = function
     |> String.concat "\n"
     |> perform_subst
 
-  | _ -> failwith (Fmt.(str "%s: internal error in extract_yaml" t.filename))
+  | _ -> Fmt.(failwithf "%s: internal error in extract_yaml" t.filename)
 
 let find_yaml t sectname =
   match (find_sect t sectname
@@ -187,7 +187,7 @@ let find_yaml t sectname =
   | (None, None, None, Some x) -> Some (sectname^"(<+)", x)
   | (None, None, None, None) -> None
   | _ ->
-    failwith (Fmt.(str "%s: malformed YAML sections" t.filename))
+    Fmt.(failwithf "%s: malformed YAML sections" t.filename)
 
 module OCamlYAML = struct
 
@@ -199,7 +199,7 @@ let parse_yaml t =
     Some yamlp ->
     let yamls = extract_yaml t yamlp in
       (Yaytypes.canon_yaml (Yaml.of_string_exn yamls))
-  | None -> failwith (Fmt.(str "%s: no YAML found" t.filename))
+  | None -> Fmt.(failwithf "%s: no YAML found" t.filename)
 
 let exec t =
   match (find_yaml t "in-yaml"
@@ -237,7 +237,7 @@ let exec t =
     ,None, None, None) ->
     warning Fmt.(str "%s: test not meant to be executed (I guess)" t.filename)
 
-  | _ -> failwith (Fmt.(str "%s: unhandled TML syntax" t.filename))
+  | _ -> Fmt.(failwithf "%s: unhandled TML syntax" t.filename)
 
 end
 
@@ -256,7 +256,7 @@ let parse_yaml t =
     Some yamlp ->
     let yamls = extract_yaml t yamlp in
       (List.map Yaytypes.canon_yaml (docs_of_string_exn yamls))
-  | None -> failwith (Fmt.(str "%s: no YAML found" t.filename))
+  | None -> Fmt.(failwithf "%s: no YAML found" t.filename)
 
 let exec t =
   match (find_yaml t "in-yaml"
@@ -294,7 +294,7 @@ let exec t =
     ,None, None, None) ->
     warning Fmt.(str "%s: test not meant to be executed (I guess)" t.filename)
 
-  | _ -> failwith (Fmt.(str "%s: unhandled TML syntax" t.filename))
+  | _ -> Fmt.(failwithf "%s: unhandled TML syntax" t.filename)
 
 end
 
@@ -313,7 +313,7 @@ let parse_json t =
     Some jsonl ->
     let jsons = String.concat "\n" (List.tl jsonl) in
       (List.map Yaytypes.canon_yaml (of_string_exn jsons))
-  | None -> failwith (Fmt.(str "%s: no JSON found" t.filename))
+  | None -> Fmt.(failwithf "%s: no JSON found" t.filename)
 
 let exec t =
   match find_sect t "in-json" with
