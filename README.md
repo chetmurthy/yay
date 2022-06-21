@@ -186,3 +186,8 @@ and is equal to
 a:
  b c d
  e f g
+
+## License
+
+YAY is currently distributed under the Apache 2.0 license.  I'm happy to redistribute
+under other OSS licenses, that helps.
